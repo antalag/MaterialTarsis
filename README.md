@@ -1,2 +1,2 @@
 # MaterialTarsis
-Proyecto privado para gestión de material del grupo scout Tarsis 351.
+Proyecto privado para gestión de material del grupo scout Tarsis 351
