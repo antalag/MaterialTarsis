@@ -1,11 +1,43 @@
-<ion-header class="toolbar" name="Inicio"></ion-header>
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Inicio</ion-title>
+    <ion-buttons end>
+      <img class="icon" src="./assets/imgs/logo.png" />
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
 
-<ion-content padding>
-  <h3>Ionic Menu Starter</h3>
+<ion-content padding class="card-background-page">
 
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will show you the way.
-  </p>
+  <ion-card>
+    <img src="./assets/imgs/tools.jpg" />
+    <div class="card-alpha"></div>
+    <div class="card-title">Herramientas</div>
+    <div class="card-subtitle">41 artículos</div>
+  </ion-card>
 
-  <button ion-button secondary menuToggle>Toggle Menu</button>
+  <ion-card>
+    <img  src="./assets/imgs/camping.jpg" />
+    <div class="card-alpha"></div>
+    <div class="card-title">Material de acampada</div>
+    <div class="card-subtitle">64 Listings</div>
+  </ion-card>
+
+  <ion-card>
+    <img  src="./assets/imgs/kitchen.jpg"  />
+    <div class="card-alpha"></div>
+    <div class="card-title">Cocina</div>
+    <div class="card-subtitle">72 Listings</div>
+  </ion-card>
+
+  <ion-card>
+    <img  src="./assets/imgs/estructura.jpg"  />
+    <div class="card-alpha"></div>
+    <div class="card-title">Estructuras</div>
+    <div class="card-subtitle">72 Listings</div>
+  </ion-card>
+
 </ion-content>

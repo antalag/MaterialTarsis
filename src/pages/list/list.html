@@ -1,18 +1,63 @@
-<ion-header class="toolbar" name="Lista de material"></ion-header>
+<ion-header>
+  <ion-navbar color="primary">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Lista de material</ion-title>
+    <ion-buttons end>
+      <img class="icon" src="./assets/imgs/logo.png" />
+    </ion-buttons>
+  </ion-navbar>
+</ion-header>
 
 <ion-content>
-    <ion-searchbar (ionInput)="getItems($event)" placeholder="Buscar">
-</ion-searchbar>
-  <ion-list>
-    <button ion-item *ngFor="let item of items" (click)="itemTapped($event, item)">
-      <ion-icon [name]="item.icon" item-start></ion-icon>
-      {{item.title}}
-      <div class="item-note" item-end>
-        {{item.note}}
-      </div>
-    </button>
-  </ion-list>
+  <ion-searchbar (ionInput)="getItems($event)" placeholder="Buscar">
+  </ion-searchbar>
+
+  <ion-grid>
+      <ion-row>
+        <ion-col *ngFor="let item of items; let i = index">
+            <ion-card (click)="itemTapped($event, item)">
+
+                <img src="./assets/imgs/tool.jpg" />
+          
+                <ion-card-content>
+                  <ion-card-title>
+                    {{item.title}}
+                  </ion-card-title>
+                  <p>
+                    {{item.note}}
+                  </p>
+                </ion-card-content>
+          
+                <ion-row no-padding>
+                  <ion-col>
+                    <button ion-button clear small color="danger" icon-start>
+                      <ion-icon name='star'></ion-icon>
+                      Favorite
+                    </button>
+                  </ion-col>
+                  <!-- <ion-col text-center>
+                    <button ion-button clear small color="danger" icon-start>
+                      <ion-icon name='musical-notes'></ion-icon>
+                      Listen
+                    </button>
+                  </ion-col>
+                  <ion-col text-right>
+                    <button ion-button clear small color="danger" icon-start>
+                      <ion-icon name='share-alt'></ion-icon>
+                      Share
+                    </button>
+                  </ion-col> -->
+                </ion-row>
+              </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+
+
   <div *ngIf="selectedItem" padding>
-    You navigated here from <b>{{selectedItem.title}}</b>
+    You navigated here from
+    <b>{{selectedItem.title}}</b>
   </div>
 </ion-content>
