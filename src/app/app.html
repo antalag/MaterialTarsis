@@ -1,16 +1,41 @@
 <ion-menu [content]="content">
-  <ion-header class="menu_header">
-  </ion-header>
+  <ion-header></ion-header>
 
-  <ion-content>
-    <div class="menu_container">
-      <img class="menu_icon" src="./assets/imgs/logo.png" />
+  <ion-content class="menu-content">
+    <div class="menu-header">
+      <div class="menu-header-img-container">
+          <img class="menu-header-background" src="./assets/imgs/tools.jpg" />
+      </div>
+      <div class="card-alpha"></div>
+      <!-- END SIDEBAR USERPIC -->
+      <!-- SIDEBAR USER TITLE -->
+      <div class="profile-usertitle">
+        <div class="profile-usertitle-name">
+          Marcus Doe
+        </div>
+        <div class="profile-usertitle-job">
+          Developer
+        </div>
+      </div>
+      <!-- END SIDEBAR USER TITLE -->
+
+      <!-- SIDEBAR BUTTONS -->
+      <div class="profile-userbuttons">
+        <button ion-button class="btn btn-success btn-sm">Follow</button>
+        <button ion-button color="light" class="btn btn-danger btn-sm">Message</button>
+      </div>
+      <!-- END SIDEBAR BUTTONS -->
+
     </div>
-    <ion-list>
-      <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
-        {{p.title}}
-      </button>
-    </ion-list>
+    <!-- SIDEBAR MENU -->
+    <div class="profile-usermenu">
+      <ion-list>
+        <button no-lines menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+          <ion-icon class="icon-menu" [name]="p.icon" item-start></ion-icon>
+          {{p.title}}
+        </button>
+      </ion-list>
+    </div>
   </ion-content>
 
 </ion-menu>

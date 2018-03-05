@@ -14,15 +14,15 @@ export class MyApp {
 
   rootPage: any = HomePage;
 
-  pages: Array<{title: string, component: any}>;
+  pages: Array<{title: string, component: any, icon: string}>;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen) {
     this.initializeApp();
 
     // used for an example of ngFor and navigation
     this.pages = [
-      { title: 'Inicio', component: HomePage },
-      { title: 'Lista de material', component: ListPage }
+      { title: 'Inicio', component: HomePage, icon: 'md-home' },
+      { title: 'Lista de material', component: ListPage, icon: 'md-hammer' }
     ];
 
   }
