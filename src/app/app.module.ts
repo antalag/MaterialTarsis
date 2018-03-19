@@ -5,34 +5,55 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
+import {LoginPage} from '../pages/login/login';
 //import {ToolbarComponent} from '../components/toolbar/toolbar';
 
 import {ComponentsModule} from '../components/components.module'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AuthProvider } from '../providers/auth';
+
+export const firebaseConfig = {
+    apiKey: "AIzaSyDWGDn_ODyuAfdExBcnN775O5XKOVmpR_U",
+    authDomain: "materialtarsis.firebaseapp.com",
+    databaseURL: "https://materialtarsis.firebaseio.com",
+    projectId: "materialtarsis",
+    storageBucket: "materialtarsis.appspot.com",
+    messagingSenderId: "514247118675"
+};
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
+    LoginPage,
     ListPage
   ],
   imports: [
     BrowserModule,
     ComponentsModule,
     IonicModule.forRoot(MyApp),
+    AngularFireModule.initializeApp(firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireAuthModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
     HomePage,
+    LoginPage,
     ListPage
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    AngularFirestoreModule,
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    AuthProvider
   ]
 })
 export class AppModule {}

@@ -1,0 +1,31 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            Login
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <div class="login" text-center>
+        <img class="logo" src="assets/imgs/logo.png" alt="Logo tharsis">
+        <h1>Bienvenido</h1>
+        <p>Por favor inicia sesion para acceder.</p>
+        <form [formGroup]="form" (ngSubmit)="logInUserPass()">
+            <ion-list>
+                <ion-item margin-bottom>
+                    <ion-label floating>E-mail</ion-label>
+                    <ion-input type="email" formControlName="email"></ion-input>
+                </ion-item>
+                <ion-item margin-bottom>
+                    <ion-label floating>Clave</ion-label>
+                    <ion-input type="password" formControlName="password"></ion-input>
+                </ion-item>
+                <button ion-button color="primary" text-center block [disabled]="!form.valid">Log In</button>
+            </ion-list>
+        </form>
+        <button (click)="loginGoogle()">
+        <i class="fa fa-google"></i> Connect Google
+    </button>
+    </div>
+</ion-content>

@@ -16,17 +16,17 @@
 
   <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let item of items; let i = index">
+        <ion-col *ngFor="let item of items | async">
             <ion-card (click)="itemTapped($event, item)">
 
                 <img src="./assets/imgs/tool.jpg" />
           
                 <ion-card-content>
                   <ion-card-title>
-                    {{item.title}}
+                    {{item.nombre}}
                   </ion-card-title>
                   <p>
-                    {{item.note}}
+                    {{item.ubicacion}}
                   </p>
                 </ion-card-content>
           
