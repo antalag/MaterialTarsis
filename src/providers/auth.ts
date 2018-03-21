@@ -18,6 +18,15 @@ export class AuthProvider {
     user: Observable<User>;
     constructor(private afAuth: AngularFireAuth,
         private afs: AngularFirestore) {
+        this.afAuth.auth.getRedirectResult().then(result=> {
+            if (result.credential) {
+                this.updateUserData(result.user)
+            }
+        }).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+        });
         this.user = this.afAuth.authState
             .switchMap(user => {
                 if (user) {
@@ -72,8 +81,8 @@ export class AuthProvider {
             this.afAuth.auth.signOut().then(() => {
                 resolve(true);
             }).catch((error: any) => {
-                    reject(error);
-                });
+                reject(error);
+            });
         })
 
     }

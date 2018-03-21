@@ -4,9 +4,11 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {AuthProvider} from '../providers/auth';
 
+
 import {LoginPage} from '../pages/login/login';
 import { ListPage } from '../pages/list/list';
 import {HomePage} from '../pages/home/home';
+import {User} from '../models/user';
 
 @Component({
   templateUrl: 'app.html'
@@ -17,9 +19,13 @@ export class MyApp {
   rootPage: any = LoginPage;
 
   pages: Array<{title: string, component: any, icon: string}>;
+  user:User = null;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth:AuthProvider) {
     this.initializeApp();
+    this.auth.user.subscribe(user=>{
+        this.user = user;
+    })
 
     // used for an example of ngFor and navigation
     this.pages = [

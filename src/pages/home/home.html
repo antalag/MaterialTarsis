@@ -12,32 +12,11 @@
 
 <ion-content padding class="card-background-page">
 
-  <ion-card>
-    <img src="./assets/imgs/tools.jpg" />
+  <ion-card *ngFor="let item of items | async" (click)="goToCategorie(item)">
+    <img [src]="item.image | safeHtml" />
     <div class="card-alpha"></div>
-    <div class="card-title">Herramientas</div>
+    <div class="card-title">{{item.nombre}}</div>
     <div class="card-subtitle">41 artículos</div>
-  </ion-card>
-
-  <ion-card>
-    <img  src="./assets/imgs/camping.jpg" />
-    <div class="card-alpha"></div>
-    <div class="card-title">Material de acampada</div>
-    <div class="card-subtitle">64 Listings</div>
-  </ion-card>
-
-  <ion-card>
-    <img  src="./assets/imgs/kitchen.jpg"  />
-    <div class="card-alpha"></div>
-    <div class="card-title">Cocina</div>
-    <div class="card-subtitle">72 Listings</div>
-  </ion-card>
-
-  <ion-card>
-    <img  src="./assets/imgs/estructura.jpg"  />
-    <div class="card-alpha"></div>
-    <div class="card-title">Estructuras</div>
-    <div class="card-subtitle">72 Listings</div>
   </ion-card>
 
 </ion-content>

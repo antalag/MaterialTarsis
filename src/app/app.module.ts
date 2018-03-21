@@ -16,6 +16,8 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { AuthProvider } from '../providers/auth';
+import { DatabaseProvider } from '../providers/database';
+import {PipesModule} from '../pipes/pipes.module';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDWGDn_ODyuAfdExBcnN775O5XKOVmpR_U",
@@ -39,7 +41,8 @@ export const firebaseConfig = {
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    PipesModule
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -53,7 +56,8 @@ export const firebaseConfig = {
     SplashScreen,
     AngularFirestoreModule,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    AuthProvider
+    AuthProvider,
+    DatabaseProvider
   ]
 })
 export class AppModule {}

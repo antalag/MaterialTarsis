@@ -24,6 +24,11 @@ export class LoginPage {
             'email': ['', Validators.required],
             'password': ['', Validators.required]
         });
+        this._AUTH.user.subscribe(user=>{
+            if(user){
+                this.navCtrl.setRoot(HomePage);
+            }
+        });
     }
 
     logInUserPass(): void {
