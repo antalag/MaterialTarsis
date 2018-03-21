@@ -51,7 +51,8 @@ export class AuthProvider {
             firebase
                 .auth()
                 .signInWithEmailAndPassword(email, password)
-                .then((val: any) => {
+                .then((val: User) => {
+                    this.updateUserData(val);
                     resolve(val);
                 })
                 .catch((error: any) => {
@@ -59,7 +60,7 @@ export class AuthProvider {
                 });
         });
     }
-    private updateUserData(user: User) {
+    public updateUserData(user: User) {
         // Sets user data to firestore on login
 
         const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);

@@ -15,9 +15,11 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AuthProvider } from '../providers/auth';
 import { DatabaseProvider } from '../providers/database';
 import {PipesModule} from '../pipes/pipes.module';
+import {PerfilPage} from '../pages/perfil/perfil';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDWGDn_ODyuAfdExBcnN775O5XKOVmpR_U",
@@ -33,7 +35,8 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     LoginPage,
-    ListPage
+    ListPage,
+    PerfilPage
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ export const firebaseConfig = {
     AngularFireModule.initializeApp(firebaseConfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    AngularFireStorageModule,
     PipesModule
   ],
   bootstrap: [IonicApp],
@@ -49,7 +53,8 @@ export const firebaseConfig = {
     MyApp,
     HomePage,
     LoginPage,
-    ListPage
+    ListPage,
+    PerfilPage
   ],
   providers: [
     StatusBar,

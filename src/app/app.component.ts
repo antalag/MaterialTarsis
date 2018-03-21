@@ -9,6 +9,7 @@ import {LoginPage} from '../pages/login/login';
 import { ListPage } from '../pages/list/list';
 import {HomePage} from '../pages/home/home';
 import {User} from '../models/user';
+import {PerfilPage} from '../pages/perfil/perfil';
 
 @Component({
   templateUrl: 'app.html'
@@ -31,11 +32,18 @@ export class MyApp {
     this.pages = [
       { title: 'Inicio', component: HomePage, icon: 'home' },
       { title: 'Lista de material', component: ListPage, icon: 'hammer' },
-      { title: 'Logout', component: LoginPage,icon:"logout" }
+//      { title: 'Logout', component: LoginPage,icon:"log-out" }
     ];
 
   }
- 
+  logOut(){
+      this.auth.signOut().then(()=>{
+          this.nav.setRoot(LoginPage);
+      })
+  }
+  editPerfil(){
+      this.nav.setRoot(PerfilPage, {'user': this.user});
+  }
   initializeApp() {
     this.platform.ready().then(() => {
       // Okay, so the platform is ready and our plugins are available.

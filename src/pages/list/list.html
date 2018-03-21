@@ -16,7 +16,7 @@
 
   <ion-grid>
       <ion-row>
-        <ion-col *ngFor="let item of items | async">
+        <ion-col col-50 *ngFor="let item of items | async">
             <ion-card (click)="itemTapped($event, item)">
 
                 <img src="./assets/imgs/tool.jpg" />
@@ -58,6 +58,6 @@
 
   <div *ngIf="selectedItem" padding>
     You navigated here from
-    <b>{{selectedItem.title}}</b>
+    <b>{{selectedItem.nombre}}</b>
   </div>
 </ion-content>

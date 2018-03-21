@@ -21,8 +21,7 @@
 
       <!-- SIDEBAR BUTTONS -->
       <div class="profile-userbuttons">
-        <button ion-button class="btn btn-success btn-sm">Follow</button>
-        <button ion-button color="light" class="btn btn-danger btn-sm">Message</button>
+        <button ion-button class="btn btn-success btn-sm" (click)="editPerfil()">Perfil</button>
       </div>
       <!-- END SIDEBAR BUTTONS -->
 
@@ -33,6 +32,10 @@
         <button no-lines menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
           <ion-icon class="icon-menu" [name]="p.icon" item-start></ion-icon>
           {{p.title}}
+        </button>
+        <button no-lines menuClose ion-item (click)="logOut()">
+          <ion-icon class="icon-menu" name="log-out" item-start></ion-icon>
+          Salir
         </button>
       </ion-list>
     </div>

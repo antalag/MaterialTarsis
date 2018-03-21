@@ -1,14 +1,8 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
 export interface Material {
     id: string,
     cantidad: number,
     nombre: string,
     ubicacion: string,
-    comentarios:string
+    comentarios:string,
+    imagen:string
 }
