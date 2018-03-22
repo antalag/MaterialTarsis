@@ -20,6 +20,7 @@ import { AuthProvider } from '../providers/auth';
 import { DatabaseProvider } from '../providers/database';
 import {PipesModule} from '../pipes/pipes.module';
 import {PerfilPage} from '../pages/perfil/perfil';
+import { Camera } from '@ionic-native/camera';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDWGDn_ODyuAfdExBcnN775O5XKOVmpR_U",
@@ -62,6 +63,7 @@ export const firebaseConfig = {
     AngularFirestoreModule,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthProvider,
+    Camera,
     DatabaseProvider
   ]
 })

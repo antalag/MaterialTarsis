@@ -4,7 +4,7 @@
     </ion-navbar>
 </ion-header>
 <ion-content padding>
-    <form [formGroup]="formPerfil" (ngSubmit)="logForm()">
+    <form [formGroup]="formPerfil" (ngSubmit)="sendForm()">
         <ion-item>
             <ion-label floating>Nombre</ion-label>
             <ion-input type="text" formControlName="displayName"></ion-input>
@@ -12,6 +12,10 @@
         <ion-item>
             <ion-label floating>Email</ion-label>
             <ion-input type="text" formControlName="email"></ion-input>
+        </ion-item>
+        <ion-item>
+            <img [src]="base64Image" width="80"/>
+            <button ion-button color="primary" block type="button" (click)="presentPictureActionSheet()">Cambiar foto</button>
         </ion-item>
         <div padding>
             <button ion-button color="primary" block type="submit" [disabled]="!formPerfil.valid">Guardar</button>
