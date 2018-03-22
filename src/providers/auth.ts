@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {AngularFireAuth} from 'angularfire2/auth';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import * as firebase from 'firebase/app';
+import {DatabaseProvider} from './database';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
@@ -17,10 +18,15 @@ import {User} from '../models/user';
 export class AuthProvider {
     user: Observable<User>;
     constructor(private afAuth: AngularFireAuth,
-        private afs: AngularFirestore) {
+        private afs: AngularFirestore,
+        private db:DatabaseProvider) {
         this.afAuth.auth.getRedirectResult().then(result=> {
             if (result.credential) {
-                this.updateUserData(result.user)
+                if(!db.getUser(result.user.uid)){
+                    this.updateUserData(result.user)
+                }else{
+                    this.user = db.getUser(result.user.uid);
+                }
             }
         }).catch(function (error) {
             // Handle Errors here.
