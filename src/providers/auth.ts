@@ -1,8 +1,8 @@
 import {Injectable} from '@angular/core';
 import {AngularFireAuth} from 'angularfire2/auth';
-import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import * as firebase from 'firebase/app';
 import {DatabaseProvider} from './database';
+import {UtilsProvider} from './utils';
 
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
@@ -18,25 +18,21 @@ import {User} from '../models/user';
 export class AuthProvider {
     user: Observable<User>;
     constructor(private afAuth: AngularFireAuth,
-        private afs: AngularFirestore,
-        private db:DatabaseProvider) {
+        private db:DatabaseProvider,
+        private utils:UtilsProvider) {
         this.afAuth.auth.getRedirectResult().then(result=> {
             if (result.credential) {
-                if(!db.getUser(result.user.uid)){
-                    this.updateUserData(result.user)
-                }else{
-                    this.user = db.getUser(result.user.uid);
+                if(!this.db.getUser(result.user.uid)){
+                    this.db.updateUserData(result.user)
                 }
             }
-        }).catch(function (error) {
-            // Handle Errors here.
-            var errorCode = error.code;
-            var errorMessage = error.message;
+        }).catch(error=> {
+            this.utils.showToast("Ha ocurrido un error, comprueba los campos e intentalo de nuevo más tarde");
         });
         this.user = this.afAuth.authState
             .switchMap(user => {
                 if (user) {
-                    return this.afs.doc<User>(`users/${user.uid}`).valueChanges()
+                    return this.db.getUser(user.uid);
                 } else {
                     return Observable.of(null)
                 }
@@ -49,7 +45,7 @@ export class AuthProvider {
     private oAuthLogin(provider) {
         return this.afAuth.auth.signInWithRedirect(provider)
             .then((credential) => {
-                this.updateUserData(credential.user)
+                this.db.updateUserData(credential.user)
             })
     }
     loginWithEmailAndPassword(email: string, password: string) {
@@ -58,29 +54,19 @@ export class AuthProvider {
                 .auth()
                 .signInWithEmailAndPassword(email, password)
                 .then((val: User) => {
-                    this.updateUserData(val);
+//                    this.updateUserData(val);
+                    if(!this.db.getUser(val.uid)){
+                        this.db.updateUserData(val)
+                    }
                     resolve(val);
                 })
                 .catch((error: any) => {
+                    this.utils.showToast("Ha ocurrido un error, comprueba los campos e intentalo de nuevo más tarde");
                     reject(error);
                 });
         });
     }
-    public updateUserData(user: User) {
-        // Sets user data to firestore on login
-
-        const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
-
-        const data: User = {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL
-        }
-
-        return userRef.set(data, {merge: true})
-
-    }
+    
 
 
     signOut() {

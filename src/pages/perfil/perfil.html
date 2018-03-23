@@ -1,7 +1,13 @@
-<ion-header>
-    <ion-navbar>
+<ion-header class="toolbar" name="Perfil">
+<!--    <ion-navbar color="primary">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
         <ion-title>Perfil</ion-title>
-    </ion-navbar>
+        <ion-buttons end>
+            <img class="icon" src="./assets/imgs/logo.png" />
+        </ion-buttons>
+    </ion-navbar>-->
 </ion-header>
 <ion-content padding>
     <form [formGroup]="formPerfil" (ngSubmit)="sendForm()">

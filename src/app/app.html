@@ -1,27 +1,24 @@
 <ion-menu [content]="content">
   <ion-header></ion-header>
-
   <ion-content class="menu-content">
     <div class="menu-header">
       <div class="menu-header-img-container">
           <img class="menu-header-background" src="./assets/imgs/tools.jpg" />
       </div>
       <div class="card-alpha"></div>
-      <!-- END SIDEBAR USERPIC -->
-      <!-- SIDEBAR USER TITLE -->
       <div class="profile-usertitle">
         <div class="profile-usertitle-name">
-          {{user?.displayName}}
+          {{(user | async)?.displayName}}
         </div>
         <div class="profile-usertitle-job">
-          {{user?.cargo}}
+          {{(user | async)?.cargo}}
         </div>
       </div>
       <!-- END SIDEBAR USER TITLE -->
 
       <!-- SIDEBAR BUTTONS -->
       <div class="profile-userbuttons">
-        <button ion-button class="btn btn-success btn-sm" (click)="editPerfil()">Perfil</button>
+        <button menuToggle ion-button class="btn btn-success btn-sm" (click)="editPerfil()">Perfil</button>
       </div>
       <!-- END SIDEBAR BUTTONS -->
 

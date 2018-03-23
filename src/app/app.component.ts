@@ -3,6 +3,7 @@ import { Nav, Platform } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import {AuthProvider} from '../providers/auth';
+import {Observable} from 'rxjs/Observable';
 
 
 import {LoginPage} from '../pages/login/login';
@@ -20,13 +21,12 @@ export class MyApp {
   rootPage: any = LoginPage;
 
   pages: Array<{title: string, component: any, icon: string}>;
-  user:User = null;
+  user:Observable<User> = null;
 
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth:AuthProvider) {
     this.initializeApp();
-    this.auth.user.subscribe(user=>{
-        this.user = user;
-    })
+    this.user = this.auth.user;
+    console.log(this.user);
 
     // used for an example of ngFor and navigation
     this.pages = [
@@ -42,7 +42,9 @@ export class MyApp {
       })
   }
   editPerfil(){
-      this.nav.setRoot(PerfilPage, {'user': this.user});
+      this.user.map(user=>{
+            this.nav.setRoot(PerfilPage, {'user': user});
+      }).subscribe()
   }
   initializeApp() {
     this.platform.ready().then(() => {

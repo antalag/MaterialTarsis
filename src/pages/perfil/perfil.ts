@@ -3,8 +3,9 @@ import {NavController, NavParams, ActionSheetController} from 'ionic-angular';
 import {Validators, FormBuilder, FormGroup} from '@angular/forms';
 import {User} from '../../models/user';
 import {Camera} from '@ionic-native/camera';
-import {AuthProvider} from '../../providers/auth';
 import {AngularFireStorage} from 'angularfire2/storage';
+import {DatabaseProvider} from '../../providers/database';
+import {HomePage} from '../home/home';
 
 /**
  * Generated class for the PerfilPage page.
@@ -22,7 +23,7 @@ export class PerfilPage {
     private user: User;
     private base64Image;
     private camera: Camera;
-    constructor(public navCtrl: NavController, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private auth: AuthProvider, private storage: AngularFireStorage) {
+    constructor(public navCtrl: NavController, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private db: DatabaseProvider, private storage: AngularFireStorage) {
         this.user = this.navParams.get('user');
         this.camera = new Camera();
         this.formPerfil = this.formBuilder.group({
@@ -36,36 +37,27 @@ export class PerfilPage {
     }
     sendForm() {
         if (this.base64Image) {
-            //           const file = event.target.files[0];
-            //           const filePath = this.user.uid+'-prefil.jpg';
             fetch(this.base64Image)
                 .then(res => res.blob())
                 .then(blob => {
                     const task = this.storage.upload(this.user.uid+'', blob);
-                    var foto=task.downloadURL().subscribe(
+                    task.downloadURL().subscribe(
                     (data)=>{
                         console.log(data);
                         var user = this.formPerfil.value as User;
                         user.photoURL = data;
-                        this.auth.updateUserData(user).then(result => {
+                        this.db.updateUserData(user).then(result => {
                             console.log(result);
                         });
                     });
-                    console.log(foto);
-//                    .catch(error => {
-//                        console.log(error);
-//                    });
                 })
 
-            //           task.downloadURL()
         } else {
             var user = this.formPerfil.value as User;
-            this.auth.updateUserData(user).then(result => {
-                console.log(result);
+            this.db.updateUserData(user).then(result => {
+                this.navCtrl.setRoot(HomePage)
             });
         }
-        console.log(this.user);
-        console.log(this.formPerfil.value as User);
     }
     presentPictureActionSheet() {
         let actionSheet = this.actionSheetCtrl.create({

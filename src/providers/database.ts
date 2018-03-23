@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument} from 'angularfire2/firestore';
-import {Observable} from 'rxjs/Observable';
+import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
 import {Material} from '../models/material';
 import {Categoria} from '../models/categoria';
 import {User} from '../models/user';
@@ -16,11 +15,29 @@ export class DatabaseProvider {
     constructor(private afs: AngularFirestore) {
     }
     getUser(uid){
-        return this.afs.doc<User>(`users/${uid}`).snapshotChanges().map(user=>{
-                const data = user.payload.data() as User;
-                const id = user.payload.id;
-                return {id, ...data};
-        });
+        return this.afs.doc<User>(`users/${uid}`).valueChanges()
+//            .map(user=>{
+//                const data = user.payload.data() as User;
+//                const id = user.payload.id;
+//                return {id, ...data};
+//        });
+    }
+    public updateUserData(user: User) {
+        // Sets user data to firestore on login
+
+        const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+
+        const data: User = {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            cargo: user.cargo,
+            rol: user.rol
+        }
+
+        return userRef.set(data, {merge: true})
+
     }
     getMateriales(filter?: string) {
         if (filter) {
