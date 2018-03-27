@@ -32,6 +32,7 @@ export class PerfilPage {
         this.formPerfil = this.formBuilder.group({
             displayName: [this.user.displayName, Validators.required],
             email: [this.user.email, Validators.email],
+            id: [this.user.id],
             uid: [this.user.uid],
             cargo: [this.user.cargo ? this.user.cargo : 'scouter'],
             rol: [this.user.rol ? this.user.rol : 3],
@@ -39,7 +40,7 @@ export class PerfilPage {
         });
     }
     sendForm() {
-        if (this.base64Image) {
+        if (this.base64Image && this.base64Image !== this.user.photoURL) {
             fetch(this.base64Image)
                 .then(res => res.blob())
                 .then(blob => {
