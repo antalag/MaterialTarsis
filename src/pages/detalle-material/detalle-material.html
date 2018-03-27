@@ -4,15 +4,46 @@
   See http://ionicframework.com/docs/components/#navigation for more info on
   Ionic pages and navigation.
 -->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>detalleMaterial</ion-title>
-  </ion-navbar>
-
+<ion-header class="toolbar" name="Detalle de material">
 </ion-header>
 
 
 <ion-content padding>
+    <ion-card *ngIf="(material | async) as material">
+  <ion-item>
+    <ion-title>{{material.nombre}}</ion-title>
+  </ion-item>
 
+  <img *ngIf="(material)?.imagen" [src]="material?.imagen | safeHtml">
+
+  <ion-card-content>
+    <p>{{material?.comentarios}}</p>
+    <ion-note>
+      {{material?.ubicacion}}
+    </ion-note>
+    <ion-list>
+        <ion-item *ngFor="let salida of salidas">
+            {{salida.fechaSalida}} <b *ngIf="(salida.usuario | async) as user">{{user.displayName}}</b>
+        </ion-item>
+    </ion-list>
+  </ion-card-content>
+
+  <ion-row>
+    <ion-col>
+      <button ion-button icon-left clear small (click)="sacarMaterial(material)">
+        <ion-icon name="cloud-download"></ion-icon>
+        <div>Sacar material</div>
+      </button>
+    </ion-col>
+    <ion-col>
+      <button ion-button icon-left clear small>
+        <ion-icon name="text"></ion-icon>
+        <div>4 Comments</div>
+      </button>
+    </ion-col>
+    <ion-col center text-center>
+    </ion-col>
+  </ion-row>
+
+</ion-card>
 </ion-content>

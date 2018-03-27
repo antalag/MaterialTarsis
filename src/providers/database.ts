@@ -62,6 +62,15 @@ export class DatabaseProvider {
             });
         }
     }
+    getMaterial(id){
+        return this.afs.doc<Material>('material/'+id);
+    }
+    insertSalidaMaterial(id,user:User){
+        return this.afs.doc<Material>('material/' + id).collection('salidas').add({
+            usuario: user.uid,
+            fechaSalida:new Date()
+        });
+    }
     getCategories() {
         return this.afs.collection('categorias').snapshotChanges().map(actions => {
             return actions.map(a => {

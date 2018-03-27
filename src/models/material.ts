@@ -4,5 +4,5 @@ export interface Material {
     nombre: string,
     ubicacion: string,
     comentarios:string,
-    imagen:string
+    imagen:string,
 }

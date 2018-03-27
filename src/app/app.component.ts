@@ -26,7 +26,6 @@ export class MyApp {
   constructor(public platform: Platform, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth:AuthProvider) {
     this.initializeApp();
     this.user = this.auth.user;
-    console.log(this.user);
 
     // used for an example of ngFor and navigation
     this.pages = [

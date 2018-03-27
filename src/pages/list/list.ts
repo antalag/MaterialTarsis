@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import {Material} from '../../models/material';
 import {Categoria} from '../../models/categoria';
 import {DatabaseProvider} from '../../providers/database';
+import {DetalleMaterialPage} from '../detalle-material/detalle-material';
 
 @Component({
     selector: 'page-list',
@@ -45,9 +46,9 @@ export class ListPage {
         ////        console.log(items);
         //    console.log(val);
     }
-    itemTapped(event, item) {
+    itemTapped(item) {
         // That's right, we're pushing to ourselves!
-        this.navCtrl.push(ListPage, {
+        this.navCtrl.setRoot(DetalleMaterialPage, {
             item: item
         });
     }

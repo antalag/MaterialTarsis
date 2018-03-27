@@ -6,6 +6,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {LoginPage} from '../pages/login/login';
+import {DetalleMaterialPage} from '../pages/detalle-material/detalle-material';
 //import {ToolbarComponent} from '../components/toolbar/toolbar';
 
 import {ComponentsModule} from '../components/components.module'
@@ -38,7 +39,8 @@ export const firebaseConfig = {
     HomePage,
     LoginPage,
     ListPage,
-    PerfilPage
+    PerfilPage,
+    DetalleMaterialPage
   ],
   imports: [
     BrowserModule,
@@ -56,7 +58,8 @@ export const firebaseConfig = {
     HomePage,
     LoginPage,
     ListPage,
-    PerfilPage
+    PerfilPage,
+    DetalleMaterialPage
   ],
   providers: [
     StatusBar,

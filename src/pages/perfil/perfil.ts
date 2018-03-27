@@ -25,6 +25,9 @@ export class PerfilPage {
     private camera: Camera;
     constructor(public navCtrl: NavController, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private db: DatabaseProvider, private storage: AngularFireStorage) {
         this.user = this.navParams.get('user');
+        if (this.user.photoURL){
+            this.base64Image = this.user.photoURL
+        }
         this.camera = new Camera();
         this.formPerfil = this.formBuilder.group({
             displayName: [this.user.displayName, Validators.required],
