@@ -48,7 +48,7 @@ export class ListPage {
     }
     itemTapped(item) {
         // That's right, we're pushing to ourselves!
-        this.navCtrl.setRoot(DetalleMaterialPage, {
+        this.navCtrl.push(DetalleMaterialPage, {
             item: item
         });
     }

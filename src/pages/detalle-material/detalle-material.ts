@@ -23,27 +23,25 @@ import {User} from '../../models/user';
 export class DetalleMaterialPage {
     private materialDoc: AngularFirestoreDocument<Material>;
     private material: Observable<Material>;
-    private salidas: Array<Salida>;
+    private salidas: Observable<Salida[]>;
     constructor(public navCtrl: NavController, public navParams: NavParams, private db: DatabaseProvider, private auth: AuthProvider) {
         this.materialDoc = this.db.getMaterial(this.navParams.get("item").id);
         this.material = this.materialDoc.valueChanges();
-        this.salidas;
-        this.materialDoc.collection<Salida>('salidas').valueChanges().map(salidas => {
-            salidas.forEach(salida => {
-                salida = salida as Salida;
-                salida.usuario = this.db.getUser(salida.usuario);
-            });
-            return salidas;
-        }).subscribe(salidas => {
-            this.salidas = salidas;
-        });
+//        this.materialDoc.collection<Salida>('salidas').valueChanges();
+        this.salidas = this.db.getSalidasMaterial(this.navParams.get("item").id);
     }
 
     sacarMaterial() {
         this.auth.user.map(user => {
-            return user as User;
+//            const data = user.payload.data() as User;
+            const id = user.payload.id;
+            return id;
         }).subscribe(user => {
-            this.db.insertSalidaMaterial(this.navParams.get("item").id, user)
+            this.db.insertSalidaMaterial(this.navParams.get("item").id, user).then(result=>{
+                console.log(result);
+            }).catch(error=>{
+                console.log(error);
+            })
 
         })
         //      Observable.concat(this.auth.user.map(user => {

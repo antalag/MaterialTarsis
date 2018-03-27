@@ -22,8 +22,8 @@
       {{material?.ubicacion}}
     </ion-note>
     <ion-list>
-        <ion-item *ngFor="let salida of salidas">
-            {{salida.fechaSalida}} <b *ngIf="(salida.usuario | async) as user">{{user.displayName}}</b>
+        <ion-item *ngFor="let salida of salidas | async">
+            {{salida.fechaSalida | amDateFormat:'dddd, DD/MM/YYYY [a las] HH:mm'}} <b *ngIf="(salida.user | async) as user">{{user.displayName}}</b>
         </ion-item>
     </ion-list>
   </ion-card-content>

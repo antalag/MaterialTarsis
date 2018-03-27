@@ -7,6 +7,8 @@ import {UtilsProvider} from './utils';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/switchMap';
 import {User} from '../models/user';
+import {Action} from 'angularfire2/firestore';
+import {DocumentSnapshot} from '@firebase/firestore-types';
 
 /*
   Generated class for the CoreAuthProvider provider.
@@ -16,7 +18,7 @@ import {User} from '../models/user';
 */
 @Injectable()
 export class AuthProvider {
-    user: Observable<User>;
+    user: Observable<Action<DocumentSnapshot>>;
     constructor(private afAuth: AngularFireAuth,
         private db:DatabaseProvider,
         private utils:UtilsProvider) {

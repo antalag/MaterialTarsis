@@ -1,6 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { ErrorHandler, NgModule } from '@angular/core';
+import { ErrorHandler, NgModule,LOCALE_ID } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
+import { MomentModule } from 'angular2-moment';
+import * as moment from  'moment-timezone';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
@@ -33,6 +37,10 @@ export const firebaseConfig = {
     messagingSenderId: "514247118675"
 };
 
+registerLocaleData(localeEs, 'es');
+moment.locale('es');
+console.log(moment.tz.guess());
+moment.tz.setDefault(moment.tz.guess());
 @NgModule({
   declarations: [
     MyApp,
@@ -44,6 +52,7 @@ export const firebaseConfig = {
   ],
   imports: [
     BrowserModule,
+    MomentModule,
     ComponentsModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
@@ -65,6 +74,7 @@ export const firebaseConfig = {
     StatusBar,
     SplashScreen,
     AngularFirestoreModule,
+    { provide: LOCALE_ID, useValue: 'es' } ,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     AuthProvider,
     Camera,
