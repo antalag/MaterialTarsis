@@ -1,0 +1,35 @@
+<ion-header class="toolbar" name="Editar Material"></ion-header>
+<ion-content padding>
+    <form [formGroup]="formMaterial" (ngSubmit)="sendForm()">
+        <ion-item>
+            <ion-label floating>Nombre</ion-label>
+            <ion-input type="text" formControlName="nombre"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Categoria</ion-label>
+<!--            <ion-input type="text" formControlName="cantidad"></ion-input>-->
+            <ion-select okText="Ok" cancelText="cancelar" formControlName="categoria">
+                <ion-option *ngFor="let cat of categorias | async" [value]="cat.nombre">{{cat.nombre}}</ion-option>
+            </ion-select>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Cantidad</ion-label>
+            <ion-input type="text" formControlName="cantidad"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Ubicacion</ion-label>
+            <ion-input type="text" formControlName="ubicacion"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label floating>Comentarios</ion-label>
+            <ion-textarea formControlName="comentarios"></ion-textarea>
+        </ion-item>
+        <ion-item>
+            <img [src]="base64Image" width="80"/>
+            <button ion-button color="primary" block type="button" (click)="presentPictureActionSheet()">Cambiar foto</button>
+        </ion-item>
+        <div padding>
+            <button ion-button color="primary" block type="submit" [disabled]="!formMaterial.valid">Guardar</button>
+        </div>
+    </form>
+</ion-content>

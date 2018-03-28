@@ -11,6 +11,7 @@ import { HomePage } from '../pages/home/home';
 import { ListPage } from '../pages/list/list';
 import {LoginPage} from '../pages/login/login';
 import {DetalleMaterialPage} from '../pages/detalle-material/detalle-material';
+import {EditMaterialPage} from '../pages/edit-material/edit-material';
 //import {ToolbarComponent} from '../components/toolbar/toolbar';
 
 import {ComponentsModule} from '../components/components.module'
@@ -48,7 +49,8 @@ moment.tz.setDefault(moment.tz.guess());
     LoginPage,
     ListPage,
     PerfilPage,
-    DetalleMaterialPage
+    DetalleMaterialPage,
+    EditMaterialPage
   ],
   imports: [
     BrowserModule,
@@ -68,7 +70,8 @@ moment.tz.setDefault(moment.tz.guess());
     LoginPage,
     ListPage,
     PerfilPage,
-    DetalleMaterialPage
+    DetalleMaterialPage,
+    EditMaterialPage
   ],
   providers: [
     StatusBar,

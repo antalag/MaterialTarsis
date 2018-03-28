@@ -25,13 +25,18 @@ export class DatabaseProvider {
         //        });
     }
     getSalidasMaterial(material) {
-        return this.afs.collection('salidas', ref => ref.where("material", "==", material).orderBy("fechaSalida","desc")).snapshotChanges()
+        return this.afs.collection('salidas', ref => ref.where("material", "==", material)
+        .orderBy("fechaSalida","desc"))
+        .snapshotChanges()
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as Salida;
                     data.user = this.getUser(data.user).map(
                         user => {
-                            return user.payload.data() as User
+                            const id = user.payload.id;
+                            let userObj = user.payload.data() as User
+                            userObj.id= id;
+                            return userObj
                         }
                     )
                     const id = a.payload.doc.id;
@@ -93,18 +98,19 @@ export class DatabaseProvider {
     getMaterial(id) {
         return this.afs.doc<Material>('material/' + id);
     }
-    insertSalidaMaterial(material, user) {
-        console.log(material);
-        console.log(user);
+    insertSalidaMaterial(material, user,comentarios) {
         return this.afs.collection('salidas').add({
             material: material,
             user: user,
+            comentarios: comentarios,
             fechaSalida: moment().toDate()
         })
-        //        return this.afs.doc<Salida>('salida/' + id).collection('salidas').add({
-        //            usuario: user.uid,
-        //            fechaSalida: new Date()
-        //        });
+    }
+    insertEntradaMaterial(idSalida, comentarios) {
+        return this.afs.doc<Salida>('salidas/' + idSalida).update({
+            comentarios: comentarios,
+            fechaEntrada: moment().toDate()
+        })
     }
     getCategories() {
         return this.afs.collection('categorias').snapshotChanges().map(actions => {

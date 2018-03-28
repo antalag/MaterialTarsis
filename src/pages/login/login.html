@@ -21,11 +21,15 @@
                     <ion-label floating>Clave</ion-label>
                     <ion-input type="password" formControlName="password"></ion-input>
                 </ion-item>
-                <button ion-button color="primary" text-center block [disabled]="!form.valid">Log In</button>
+                <button ion-button color="primary" text-center block [disabled]="!form.valid">
+                        <ion-icon name="person"></ion-icon>
+                    Conectar
+                </button>
             </ion-list>
         </form>
-        <button (click)="loginGoogle()">
-        <i class="fa fa-google"></i> Connect Google
-    </button>
+        <button ion-button type="button" color="danger" icon-left block (click)="loginGoogle()">
+                <fa-icon name="google"></fa-icon>
+            Conectar con Google
+        </button>
     </div>
 </ion-content>

@@ -1,3 +1,35 @@
 page-detalle-material {
-
+    .listaSalidas{
+        padding: 0;
+        .cabeceraLista{
+            font-size: 2.4rem;
+            padding: 0;
+            margin:0;
+            font-weight: 500;
+            color:#000;
+            ion-label.label{
+                margin: 0;
+            }
+        }
+        ion-item.item{
+            padding:0;
+            .itemsSalidas{
+                padding: 0;
+                ion-icon,ion-label{
+                    margin-top:0;
+                    margin-bottom:0;
+                }
+            }
+        }
+    }
+    .list-md .item-block .item-inner .list-md .item-block .item-inner{
+        border-bottom: 1px solid #dedede;
+    }
+    
+    .list-md .item-block .item-inner .list-md > .item-block:last-child ion-label, 
+    .list-md .item-block .item-inner .list-md > .item-block:last-child .item-inner, 
+    .list-md .item-block .item-inner .list-md > .item-wrapper:last-child ion-label, 
+    .list-md .item-block .item-inner .list-md > .item-wrapper:last-child .item-inner{
+        border-bottom: 0;
+    }
 }

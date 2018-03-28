@@ -14,6 +14,8 @@ $app-direction: ltr;
 
 @import "ionic.globals";
 
+$fa-font-path: $font-path;
+@import "font-awesome";
 
 // Shared Variables
 // --------------------------------------------------
@@ -39,7 +41,8 @@ $colors: (
   danger:     #f53d3d,
   light:      #fffc5d,
   dark:       #316fdb,
-  hover:      #98beff
+  hover:      #98beff,
+  yellowTarsis: #ffcc00
 );
 
 

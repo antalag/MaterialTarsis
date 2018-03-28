@@ -7,5 +7,6 @@ export interface Salida{
     user?:Observable<User>,
     material?:Observable<Material>,
     fechaSalida:Date,
-    fechaEntrada:Date
+    fechaEntrada:Date,
+    comentarios:string
 }

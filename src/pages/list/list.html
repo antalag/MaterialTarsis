@@ -1,42 +1,41 @@
 <ion-header class="toolbar" name="Lista de material"></ion-header>
 <ion-content>
-  <ion-grid>
-      <ion-row>
-        <ion-col col-6 *ngFor="let item of items | async">
-            <ion-card (click)="itemTapped(item)">
-                <img src="./assets/imgs/tool.jpg" />
-                <ion-card-content>
-                  <ion-card-title>
-                    {{item.nombre}}
-                  </ion-card-title>
-                  <p>
-                    {{item.ubicacion}}
-                  </p>
-                </ion-card-content>
-                <ion-row no-padding>
-                  <ion-col>
-                    <button ion-button clear small color="danger" icon-start>
-                      <ion-icon name='star'></ion-icon>
-                      Favorite
-                    </button>
-                  </ion-col>
-                </ion-row>
-              </ion-card>
-        </ion-col>
-      </ion-row>
+    <ion-grid>
+        <ion-row>
+            <ion-col col-6 *ngFor="let item of items | async">
+                     <ion-card (click)="itemTapped(item)">
+                    <img src="./assets/imgs/tool.jpg" />
+                    <ion-card-content>
+                        <ion-card-title>
+                            {{item.nombre}}
+                        </ion-card-title>
+                        <p>
+                            {{item.ubicacion}}
+                        </p>
+                    </ion-card-content>
+                    <ion-row no-padding>
+                        <ion-col>
+                            <button ion-button clear small color="danger" icon-start>
+                                <ion-icon name='star'></ion-icon>
+                                Favorite
+                            </button>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ion-col>
+        </ion-row>
     </ion-grid>
 
 
-  <div *ngIf="selectedItem" padding>
-    You navigated here from
-    <b>{{selectedItem.nombre}}</b>
-  </div>
+    <div *ngIf="selectedItem" padding>
+        You navigated here from
+        <b>{{selectedItem.nombre}}</b>
+    </div>
 </ion-content>
 <ion-footer>
-<ion-toolbar>
-    
-    <ion-title *ngIf="selectedCategory">{{selectedCategory}}</ion-title>
-  <ion-searchbar (ionInput)="getItems($event)" placeholder="Buscar">
-  </ion-searchbar>
-</ion-toolbar>
+    <ion-toolbar color="yellowTarsis">
+        <ion-title *ngIf="selectedCategory">{{selectedCategory}}</ion-title>
+        <ion-searchbar (ionInput)="getItems($event)" placeholder="Buscar">
+        </ion-searchbar>
+    </ion-toolbar>
 </ion-footer>

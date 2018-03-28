@@ -27,8 +27,8 @@ export class MyApp {
         this.initializeApp();
         this.user = this.auth.user.map(user => {
             const data = user.payload.data() as User;
-            const id = user.payload.id;
-            return {id, ...data};
+            data.id = user.payload.id;
+            return data;
         });
         this.pages = [
             {title: 'Inicio', component: HomePage, icon: 'home'},
@@ -43,7 +43,7 @@ export class MyApp {
     }
     editPerfil() {
         this.user.map(user => {
-            this.nav.setRoot(PerfilPage, {'user': user});
+            this.nav.push(PerfilPage, {'user': user});
         }).subscribe()
     }
     initializeApp() {
