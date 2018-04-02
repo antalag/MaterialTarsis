@@ -49,7 +49,7 @@
                 <ion-icon name="cloud-download"></ion-icon>
                 <div>Sacar material</div>
             </button> 
-            <button *ngIf="esDevolvible| async" ion-button icon-left clear small (click)="devolverMaterial()">
+            <button *ngIf="esDevolvible| async | async" ion-button icon-left clear small (click)="devolverMaterial()">
                 <ion-icon name="cloud-upload"></ion-icon>
                 <div>Devolver material</div>
             </button>

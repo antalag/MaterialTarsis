@@ -26,8 +26,8 @@ export class DatabaseProvider {
     }
     getSalidasMaterial(material) {
         return this.afs.collection('salidas', ref => ref.where("material", "==", material)
-        .orderBy("fechaSalida","desc"))
-        .snapshotChanges()
+            .orderBy("fechaSalida", "desc"))
+            .snapshotChanges()
             .map(actions => {
                 return actions.map(a => {
                     const data = a.payload.doc.data() as Salida;
@@ -35,7 +35,7 @@ export class DatabaseProvider {
                         user => {
                             const id = user.payload.id;
                             let userObj = user.payload.data() as User
-                            userObj.id= id;
+                            userObj.id = id;
                             return userObj
                         }
                     )
@@ -61,6 +61,31 @@ export class DatabaseProvider {
 
         return userRef.set(data, {merge: true})
 
+    }
+    public updateMaterialData(material: Material) {
+        // Sets user data to firestore on login
+        const data = {
+            imagen: material.imagen,
+            cantidad: material.cantidad,
+            nombre: material.nombre,
+            ubicacion: material.ubicacion,
+            comentarios: material.comentarios,
+            categoria: material.categoria
+        }
+            const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material.id}`);
+            return materialRef.set(data, {merge: true})
+    }
+    insertMaterial(material:Material){
+        const data = {
+            imagen: material.imagen,
+            cantidad: material.cantidad,
+            nombre: material.nombre,
+            ubicacion: material.ubicacion,
+            comentarios: material.comentarios,
+            categoria: material.categoria
+        }
+        const materialcollection = this.afs.collection<any>('material');
+        return materialcollection.add(data);
     }
     getSalidasUser(userId) {
         return this.afs.collection('salidas',
@@ -98,7 +123,7 @@ export class DatabaseProvider {
     getMaterial(id) {
         return this.afs.doc<Material>('material/' + id);
     }
-    insertSalidaMaterial(material, user,comentarios) {
+    insertSalidaMaterial(material, user, comentarios) {
         return this.afs.collection('salidas').add({
             material: material,
             user: user,

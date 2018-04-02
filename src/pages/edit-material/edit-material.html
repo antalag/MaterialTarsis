@@ -14,7 +14,7 @@
         </ion-item>
         <ion-item>
             <ion-label floating>Cantidad</ion-label>
-            <ion-input type="text" formControlName="cantidad"></ion-input>
+            <ion-input type="number" formControlName="cantidad"></ion-input>
         </ion-item>
         <ion-item>
             <ion-label floating>Ubicacion</ion-label>
@@ -22,7 +22,7 @@
         </ion-item>
         <ion-item>
             <ion-label floating>Comentarios</ion-label>
-            <ion-textarea formControlName="comentarios"></ion-textarea>
+            <ion-textarea autosize formControlName="comentarios"></ion-textarea>
         </ion-item>
         <ion-item>
             <img [src]="base64Image" width="80"/>

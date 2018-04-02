@@ -1,15 +1,17 @@
-import {Component} from '@angular/core';
-import {NavController, NavParams} from 'ionic-angular';
-import {AngularFirestoreDocument} from 'angularfire2/firestore';
-import {Material} from '../../models/material'
-import {Observable} from 'rxjs/Observable';
+import { Component } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
+import { AngularFirestoreDocument } from 'angularfire2/firestore';
+import { Material } from '../../models/material'
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
-import {AlertController} from 'ionic-angular';
-import {Salida} from '../../models/salida';
-import {DatabaseProvider} from '../../providers/database';
-import {AuthProvider} from '../../providers/auth';
-import {User} from '../../models/user';
-import {EditMaterialPage} from '../edit-material/edit-material';
+import 'rxjs/add/operator/reduce';
+import { AlertController } from 'ionic-angular';
+import { DatabaseProvider } from '../../providers/database';
+import { AuthProvider } from '../../providers/auth';
+import { User } from '../../models/user';
+import { EditMaterialPage } from '../edit-material/edit-material';
+import { Salida } from '../../models/salida';
+import { clamp } from 'ionic-angular/util/util';
 
 /**
  * Generated class for the DetalleMaterialPage page.
@@ -27,32 +29,36 @@ export class DetalleMaterialPage {
     private material: Observable<Material>;
     private salidas: Observable<Salida[]>;
     private salidaADevolver: Salida;
-    private esDevolvible:any;
+    private esDevolvible: Observable<Observable<boolean>> = Observable.of(Observable.of(false));
     private esSacable: Observable<boolean> = Observable.of(false);
     private esEditable: Observable<boolean> = Observable.of(false);
     constructor(public navCtrl: NavController, public navParams: NavParams, private db: DatabaseProvider, private auth: AuthProvider, private alert: AlertController) {
     }
     ionViewWillEnter() {
         this.materialDoc = this.db.getMaterial(this.navParams.get("item").id);
-        this.material = this.materialDoc.valueChanges();
+        this.material = this.materialDoc.snapshotChanges().map(a => {
+            const data = a.payload.data() as Material;
+            const id = a.payload.id;
+            return { id, ...data };
+        });
         //        this.materialDoc.collection<Salida>('salidas').valueChanges();
         this.salidas = this.db.getSalidasMaterial(this.navParams.get("item").id);
         this.getDevolvible();
         this.getSacable();
         this.getEditable();
     }
-    getEditable(){
-        this.esEditable = this.auth.user.map(user=>{
+    getEditable() {
+        this.esEditable = this.auth.user.map(user => {
             let data = user.payload.data() as User;
-            if (data.rol <=3){
+            if (data.rol <= 3) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
         })
     }
-    editarMaterial(material){
-           this.navCtrl.push(EditMaterialPage, {material:material as Material})
+    editarMaterial(material) {
+        this.navCtrl.push(EditMaterialPage, { material: material as Material })
     }
     sacarMaterial() {
         let alert = this.alert.create({
@@ -135,27 +141,48 @@ export class DetalleMaterialPage {
         })
     }
     getDevolvible() {
-        this.esDevolvible = this.salidas.map(salidas => {
-            salidas.forEach(salida => {
-                if (!salida.fechaEntrada) {
-                    let obsrUser: Observable<string> = this.auth.user.map(user => {
-                        const id = user.payload.id;
-                        return id
-                    })
-                    let obsrUserSal: Observable<string> = salida.user.map(user => {
-                        return user.id;
-                    })
-                    return obsrUserSal.combineLatest(obsrUser, (a, b) => {
-                        if (a == b) {
-                            this.salidaADevolver = salida;
-                        }
-                        return a == b;
-                    }).map(result => {
-                        return result;
-                    });
+        this.esDevolvible = this.salidas.map((salidas) => {
+            return salidas.reduce((result: Observable<boolean>, salida: Salida) => {
+                if (salida.fechaEntrada) {
+                    return result;
                 }
-            })
+                let obsrUser: Observable<string> = this.auth.user.map(user => {
+                    const id = user.payload.id;
+                    return id
+                })
+                let obsrUserSal: Observable<string> = salida.user.map(user => {
+                    return user.id;
+                })
+                let obserComb: Observable<boolean> = obsrUserSal.combineLatest(obsrUser, (a, b) => {
+                    if(a==b){
+                        this.salidaADevolver = salida;
+                    }
+                    return a==b
+                })
+                return obserComb;
+            }, Observable.of(false))
         })
+        // this.esDevolvible = this.salidas.map(salidas => {
+        //     salidas.forEach(salida => {
+        //         if (!salida.fechaEntrada) {
+        //             let obsrUser: Observable<string> = this.auth.user.map(user => {
+        //                 const id = user.payload.id;
+        //                 return id
+        //             })
+        //             let obsrUserSal: Observable<string> = salida.user.map(user => {
+        //                 return user.id;
+        //             })
+        //             return obsrUserSal.combineLatest(obsrUser, (a, b) => {
+        //                 if (a == b) {
+        //                     this.salidaADevolver = salida;
+        //                 }
+        //                 return a == b;
+        //             }).map(result => {
+        //                 return result;
+        //             });
+        //         }
+        //     })
+        // })
     }
 
 }
