@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { SafeHtmlPipe } from './safe-html/safe-html';
+import { ThumbPipe } from './thumb/thumb';
 @NgModule({
-	declarations: [SafeHtmlPipe],
+	declarations: [SafeHtmlPipe,
+    ThumbPipe],
 	imports: [],
-	exports: [SafeHtmlPipe]
+	exports: [SafeHtmlPipe,
+    ThumbPipe]
 })
 export class PipesModule {}

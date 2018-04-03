@@ -11,7 +11,7 @@
 <ion-content padding>
     <div *ngIf="(material | async) as material">
         <h1>{{material.nombre}}</h1>
-        <img *ngIf="(material)?.imagen" [src]="material?.imagen | safeHtml"/>
+        <img *ngIf="(material)?.imagen" [src]="material?.imagen | thumb:512 | async | safeHtml"/>
         <h2>Descripción:</h2>
         <p>{{material?.comentarios}}</p>
         <h2>Ubicación:</h2>

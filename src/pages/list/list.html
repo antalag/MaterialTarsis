@@ -4,7 +4,7 @@
         <ion-row>
             <ion-col col-6 *ngFor="let item of items | async">
                      <ion-card (click)="itemTapped(item)">
-                    <img *ngIf="item.imagen" [src]="item.imagen | safeHtml" />
+                    <img *ngIf="item.imagen" [src]="item.imagen | thumb:256 | async | safeHtml" />
                     <ion-card-content>
                         <ion-card-title>
                             {{item.nombre}}
