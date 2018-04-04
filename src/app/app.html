@@ -1,6 +1,6 @@
-<ion-menu [content]="content">
+<ion-menu [content]="content" persistent="true" side='right'>
   <ion-header></ion-header>
-  <ion-content class="menu-content">
+  <ion-content class="menu-content" *ngIf="user | async as user">
     <div class="menu-header">
       <div class="menu-header-img-container">
           <img class="menu-header-background" src="./assets/imgs/tools.jpg" />
@@ -8,10 +8,10 @@
       <div class="card-alpha"></div>
       <div class="profile-usertitle">
         <div class="profile-usertitle-name">
-          {{(user | async)?.displayName}}
+          {{user.displayName}}
         </div>
         <div class="profile-usertitle-job">
-          {{(user | async)?.cargo}}
+          {{user.cargo}}
         </div>
       </div>
       <!-- END SIDEBAR USER TITLE -->
@@ -29,6 +29,14 @@
         <button no-lines menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
           <ion-icon class="icon-menu" [name]="p.icon" item-start></ion-icon>
           {{p.title}}
+        </button>
+        <button *ngIf="user.rol==3" no-lines menuClose ion-item (click)="addMaterial()">
+          <fa-icon class="icon-menu" name="wrench" item-start></fa-icon>
+          Añadir Material
+        </button>
+        <button *ngIf="user.rol==3" no-lines menuClose ion-item (click)="editCategories()">
+          <fa-icon class="icon-menu" name="box" item-start></fa-icon>
+          Editar Categorias
         </button>
         <button no-lines menuClose ion-item (click)="logOut()">
           <ion-icon class="icon-menu" name="log-out" item-start></ion-icon>

@@ -6,6 +6,7 @@ import {Camera} from '@ionic-native/camera';
 import {AngularFireStorage} from 'angularfire2/storage';
 import {DatabaseProvider} from '../../providers/database';
 import {HomePage} from '../home/home';
+import {UtilsProvider} from '../../providers/utils';
 
 /**
  * Generated class for the PerfilPage page.
@@ -23,7 +24,13 @@ export class PerfilPage {
     private user: User;
     private base64Image;
     private camera: Camera;
-    constructor(public navCtrl: NavController, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private db: DatabaseProvider, private storage: AngularFireStorage) {
+    constructor(public navCtrl: NavController, 
+        private actionSheetCtrl: ActionSheetController, 
+        public navParams: NavParams, 
+        private formBuilder: FormBuilder, 
+        private db: DatabaseProvider, 
+        private storage: AngularFireStorage,
+        private utils:UtilsProvider) {
         this.user = this.navParams.get('user');
         if (this.user.photoURL){
             this.base64Image = this.user.photoURL
@@ -47,11 +54,11 @@ export class PerfilPage {
                     const task = this.storage.upload(this.user.uid+'', blob);
                     task.downloadURL().subscribe(
                     (data)=>{
-                        console.log(data);
                         var user = this.formPerfil.value as User;
                         user.photoURL = data;
                         this.db.updateUserData(user).then(result => {
-                            console.log(result);
+                            this.utils.showToast("Datos Guardados");
+                            this.navCtrl.popTo(HomePage)
                         });
                     });
                 })
@@ -59,7 +66,8 @@ export class PerfilPage {
         } else {
             var user = this.formPerfil.value as User;
             this.db.updateUserData(user).then(result => {
-                this.navCtrl.setRoot(HomePage)
+                this.utils.showToast("Datos Guardados");
+                this.navCtrl.popTo(HomePage)
             });
         }
     }

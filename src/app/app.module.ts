@@ -12,6 +12,7 @@ import { ListPage } from '../pages/list/list';
 import {LoginPage} from '../pages/login/login';
 import {DetalleMaterialPage} from '../pages/detalle-material/detalle-material';
 import {EditMaterialPage} from '../pages/edit-material/edit-material';
+import {EditCategoriasPage} from '../pages/edit-categorias/edit-categorias';
 //import {ToolbarComponent} from '../components/toolbar/toolbar';
 
 import {ComponentsModule} from '../components/components.module'
@@ -28,6 +29,7 @@ import {PipesModule} from '../pipes/pipes.module';
 import {PerfilPage} from '../pages/perfil/perfil';
 import { Camera } from '@ionic-native/camera';
 import { UtilsProvider } from '../providers/utils';
+import {FormCategoriaPage} from '../pages/form-categoria/form-categoria';
 
 export const firebaseConfig = {
     apiKey: "AIzaSyDWGDn_ODyuAfdExBcnN775O5XKOVmpR_U",
@@ -40,7 +42,6 @@ export const firebaseConfig = {
 
 registerLocaleData(localeEs, 'es');
 moment.locale('es');
-console.log(moment.tz.guess());
 moment.tz.setDefault(moment.tz.guess());
 @NgModule({
   declarations: [
@@ -50,7 +51,9 @@ moment.tz.setDefault(moment.tz.guess());
     ListPage,
     PerfilPage,
     DetalleMaterialPage,
-    EditMaterialPage
+    EditMaterialPage,
+    EditCategoriasPage,
+    FormCategoriaPage
   ],
   imports: [
     BrowserModule,
@@ -71,7 +74,9 @@ moment.tz.setDefault(moment.tz.guess());
     ListPage,
     PerfilPage,
     DetalleMaterialPage,
-    EditMaterialPage
+    EditMaterialPage,
+    EditCategoriasPage,
+    FormCategoriaPage
   ],
   providers: [
     StatusBar,

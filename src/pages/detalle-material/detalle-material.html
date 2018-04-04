@@ -59,6 +59,10 @@
                  <fa-icon name="edit"></fa-icon>
                 <div>Editar material</div>
             </button>
+            <button *ngIf="esEditable| async" color="danger" ion-button icon-left clear small (click)="borrarMaterial(material)">
+                 <fa-icon name="trash"></fa-icon>
+                <div>Borrar material</div>
+            </button>
             
         </ion-buttons>
     </ion-toolbar>

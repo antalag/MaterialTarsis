@@ -1,9 +1,11 @@
 <ion-navbar color="primary">
-  <button ion-button menuToggle>
-    <ion-icon name="menu"></ion-icon>
-  </button>
-  <ion-title>{{name}}</ion-title>
-  <ion-buttons end>
-    <img class="icon" src="./assets/imgs/logo.png" />
-  </ion-buttons>
+    <ion-title>{{name}}</ion-title>
+    <ion-buttons end>
+        <button ion-button menuToggle left icon-only>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <button ion-button icon-only right>
+            <img class="icon" src="./assets/imgs/logo.png" />
+        </button>
+    </ion-buttons>
 </ion-navbar>

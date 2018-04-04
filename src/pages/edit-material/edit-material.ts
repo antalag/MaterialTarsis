@@ -7,6 +7,7 @@ import {Material} from '../../models/material';
 import {Camera} from '@ionic-native/camera';
 import {Observable} from 'rxjs/Observable';
 import {Categoria} from '../../models/categoria';
+import {UtilsProvider} from '../../providers/utils';
 
 /**
  * Generated class for the EditMaterialPage page.
@@ -24,10 +25,12 @@ export class EditMaterialPage {
     private material: Material;
     private base64Image;
     private camera: Camera;
+    private title:string;
     private categorias: Observable<Categoria[]>;
-    constructor(public navCtrl: NavController, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private db: DatabaseProvider, private storage: AngularFireStorage) {
+    constructor(public navCtrl: NavController,private utils:UtilsProvider, private actionSheetCtrl: ActionSheetController, public navParams: NavParams, private formBuilder: FormBuilder, private db: DatabaseProvider, private storage: AngularFireStorage) {
         if (this.navParams.get('material')) {
             this.material = this.navParams.get('material');
+            this.title = "Editar material";
         } else {
             const data: Material = {
                 id: null,
@@ -39,8 +42,8 @@ export class EditMaterialPage {
                 categoria: null
             }
             this.material = data;
+            this.title = "Añadir material";
         }
-        console.log(this.material);
         if (this.material.imagen) {
             this.base64Image = this.material.imagen
         }
@@ -64,16 +67,17 @@ export class EditMaterialPage {
                     const task = this.storage.upload(this.material.id + '', blob);
                     task.downloadURL().subscribe(
                         (data) => {
-                            console.log(data);
                             var material = this.formMaterial.value as Material;
                             material.imagen = data;
                             if (material.id) {
                                 this.db.updateMaterialData(material).then(result => {
-                                    console.log(result);
+                                    this.utils.showToast("Material guardado");
+                                    this.navCtrl.pop();
                                 })
                             } else {
                                 this.db.insertMaterial(material).then(result => {
-                                    console.log(result);
+                                    this.utils.showToast("Material creado");
+                                    this.navCtrl.pop();
                                 })
                             }
                         });
@@ -81,16 +85,17 @@ export class EditMaterialPage {
 
         } else {
             var material = this.formMaterial.value as Material;
-            console.log(material);
             if (material.id) {
                 this.db.updateMaterialData(material).then(result => {
-                    console.log(result);
+                   this.utils.showToast("Material guardado");
+                   this.navCtrl.pop();
                 }).catch(error=>{
                     console.log(error);
                 })
             } else {
                 this.db.insertMaterial(material).then(result => {
-                    console.log(result);
+                    this.utils.showToast("Material creado");
+                    this.navCtrl.pop();
                 })
             }
         }

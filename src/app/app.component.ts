@@ -11,6 +11,8 @@ import {ListPage} from '../pages/list/list';
 import {HomePage} from '../pages/home/home';
 import {User} from '../models/user';
 import {PerfilPage} from '../pages/perfil/perfil';
+import {EditMaterialPage} from '../pages/edit-material/edit-material';
+import {EditCategoriasPage} from '../pages/edit-categorias/edit-categorias';
 
 @Component({
     templateUrl: 'app.html'
@@ -41,6 +43,12 @@ export class MyApp {
             this.nav.setRoot(LoginPage);
         })
     }
+    addMaterial(){
+        this.nav.push(EditMaterialPage);
+    }
+    editCategories(){
+        this.nav.push(EditCategoriasPage);
+    }
     editPerfil() {
         this.user.map(user => {
             this.nav.push(PerfilPage, {'user': user});
@@ -53,7 +61,7 @@ export class MyApp {
         });
     }
 
-    openPage(page) {
+    openPage(page: {title: string, component: Component,icon:string}) {
         // Reset the content nav to have just this page
         // we wouldn't want the back button to show in this scenario
         this.nav.setRoot(page.component);

@@ -19,6 +19,9 @@
         width: 100%;
         height: auto;
     }
+    ion-buttons{
+        display:flex;
+    }
    
 }
 
@@ -118,3 +121,9 @@ body {
 }
 
 
+.item-md fa-icon[item-left] + .item-inner, 
+.item-md fa-icon[item-left] + .item-input, 
+.item-md fa-icon[item-start] + .item-inner, 
+.item-md fa-icon[item-start] + .item-input {
+    margin-left: 24px;
+}

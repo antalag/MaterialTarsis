@@ -72,10 +72,10 @@ export class DatabaseProvider {
             comentarios: material.comentarios,
             categoria: material.categoria
         }
-            const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material.id}`);
-            return materialRef.set(data, {merge: true})
+        const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material.id}`);
+        return materialRef.set(data, {merge: true})
     }
-    insertMaterial(material:Material){
+    insertMaterial(material: Material) {
         const data = {
             imagen: material.imagen,
             cantidad: material.cantidad,
@@ -86,6 +86,41 @@ export class DatabaseProvider {
         }
         const materialcollection = this.afs.collection<any>('material');
         return materialcollection.add(data);
+    }
+    deleteMaterial(material:Material){
+        const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material.id}`);
+        console.log(material.id);
+        let batch = this.afs.firestore.batch();
+        batch.delete(materialRef.ref);
+        return this.afs.collection('salidas').ref.where("material", "==", material.id).get().then(result=>{
+            result.forEach(doc=>{
+                console.log(doc);
+                batch.delete(doc.ref);
+            })
+            return batch.commit();
+        })
+//        return materialRef.delete();
+    }
+    public updateCategoriaData(categoria: Categoria) {
+        // Sets user data to firestore on login
+        const data = {
+            image: categoria.image,
+            nombre: categoria.nombre,
+        }
+        const categoRef: AngularFirestoreDocument<any> = this.afs.doc(`categorias/${categoria.id}`);
+        return categoRef.set(data, {merge: true})
+    }
+    insertCategoria(categoria: Categoria) {
+        const data = {
+            image: categoria.image,
+            nombre: categoria.nombre,
+        }
+        const materialcollection = this.afs.collection<any>('categorias');
+        return materialcollection.add(data);
+    }
+    deleteCategoria(categoria:Categoria){
+        const categoRef: AngularFirestoreDocument<any> = this.afs.doc(`categorias/${categoria.id}`);
+        return categoRef.delete();
     }
     getSalidasUser(userId) {
         return this.afs.collection('salidas',

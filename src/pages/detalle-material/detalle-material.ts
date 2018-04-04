@@ -11,7 +11,7 @@ import { AuthProvider } from '../../providers/auth';
 import { User } from '../../models/user';
 import { EditMaterialPage } from '../edit-material/edit-material';
 import { Salida } from '../../models/salida';
-import { clamp } from 'ionic-angular/util/util';
+import {UtilsProvider} from '../../providers/utils';
 
 /**
  * Generated class for the DetalleMaterialPage page.
@@ -32,7 +32,12 @@ export class DetalleMaterialPage {
     private esDevolvible: Observable<Observable<boolean>> = Observable.of(Observable.of(false));
     private esSacable: Observable<boolean> = Observable.of(false);
     private esEditable: Observable<boolean> = Observable.of(false);
-    constructor(public navCtrl: NavController, public navParams: NavParams, private db: DatabaseProvider, private auth: AuthProvider, private alert: AlertController) {
+    constructor(public navCtrl: NavController, 
+        public navParams: NavParams, 
+        private db: DatabaseProvider, 
+        private auth: AuthProvider, 
+        private utils:UtilsProvider,
+        private alert: AlertController) {
     }
     ionViewWillEnter() {
         this.materialDoc = this.db.getMaterial(this.navParams.get("item").id);
@@ -43,6 +48,9 @@ export class DetalleMaterialPage {
         });
         //        this.materialDoc.collection<Salida>('salidas').valueChanges();
         this.salidas = this.db.getSalidasMaterial(this.navParams.get("item").id);
+        this.getActions();
+    }
+    getActions(){
         this.getDevolvible();
         this.getSacable();
         this.getEditable();
@@ -59,6 +67,27 @@ export class DetalleMaterialPage {
     }
     editarMaterial(material) {
         this.navCtrl.push(EditMaterialPage, { material: material as Material })
+    }
+    borrarMaterial(mat:Material) { 
+        let alert = this.alert.create({
+            title: "Confirmar borrado",
+            message: "¿Estas seguro que deseas borrar este material?",
+            buttons: [
+                {
+                    text: "cancelar"
+                },
+                {
+                    text: "confirmar",
+                    handler: () => {
+                        this.db.deleteMaterial(mat).then(result => {
+                            this.utils.showToast("Material borrado");
+                            this.navCtrl.pop();
+                        })
+                    }
+                }
+            ]
+        });
+        alert.present();
     }
     sacarMaterial() {
         let alert = this.alert.create({
@@ -83,11 +112,10 @@ export class DetalleMaterialPage {
                             return id;
                         }).subscribe(user => {
                             this.db.insertSalidaMaterial(this.navParams.get("item").id, user, data.comentarios).then(result => {
-                                console.log(result);
-                                this.getSacable();
-                                this.getDevolvible();
+//                                this.getActions();
+                                this.utils.showToast("Insertada salida de material");
                             }).catch(error => {
-                                console.log(error);
+                                this.utils.showToast("Error:" + error);
                             })
 
                         })
@@ -119,9 +147,10 @@ export class DetalleMaterialPage {
                     text: 'Devolver',
                     handler: data => {
                         this.db.insertEntradaMaterial(this.salidaADevolver.id, data.comentarios).then(result => {
-                            console.log(result);
+                            this.utils.showToast("Insertada devolución de material");
+//                            this.getActions();
                         }).catch(error => {
-                            console.log(error);
+                            this.utils.showToast("Error: "+error);
                         })
                     }
                 }
