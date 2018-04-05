@@ -11,7 +11,9 @@
     color: $color;
   }
 }
-
+.fabrand {
+  font-family: 'Font Awesome 5 Brands';
+}
 @each $color-name, $color-base, $color-contrast in get-colors($colors) {
   @include fa-color($color-name, $color-base);
 }

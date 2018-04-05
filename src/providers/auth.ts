@@ -20,19 +20,21 @@ import {DocumentSnapshot} from '@firebase/firestore-types';
 export class AuthProvider {
     user: Observable<Action<DocumentSnapshot>>;
     constructor(private afAuth: AngularFireAuth,
-        private db:DatabaseProvider,
-        private utils:UtilsProvider) {
-        this.afAuth.auth.getRedirectResult().then(result=> {
+        private db: DatabaseProvider,
+        private utils: UtilsProvider) {
+        this.afAuth.auth.getRedirectResult().then(result => {
+            console.log('result1',result);
             if (result.credential) {
-                if(!this.db.getUser(result.user.uid)){
+                if (!this.db.getUser(result.user.uid)) {
                     this.db.updateUserData(result.user)
                 }
             }
-        }).catch(error=> {
+        }).catch(error => {
             this.utils.showToast("Ha ocurrido un error, comprueba los campos e intentalo de nuevo más tarde");
         });
         this.user = this.afAuth.authState
             .switchMap(user => {
+                console.log(user);
                 if (user) {
                     return this.db.getUser(user.uid);
                 } else {
@@ -46,9 +48,30 @@ export class AuthProvider {
     }
     private oAuthLogin(provider) {
         return this.afAuth.auth.signInWithRedirect(provider)
-            .then((credential) => {
-                this.db.updateUserData(credential.user)
+            .then((S) => {
+                this.afAuth.auth.getRedirectResult().then(result => {
+                    console.log('result2',result);
+                    if (result.credential) {
+                        if (!this.db.getUser(result.user.uid)) {
+                            this.db.updateUserData(result.user)
+                        }
+                        this.user = this.afAuth.authState
+            .switchMap(user => {
+                console.log(user);
+                if (user) {
+                    return this.db.getUser(user.uid);
+                } else {
+                    return Observable.of(null)
+                }
             })
+                    }
+                })
+            }).catch(function (error) {
+                // Handle Errors here.
+                var errorCode = error.code;
+                var errorMessage = error.message;
+            });
+
     }
     loginWithEmailAndPassword(email: string, password: string) {
         return new Promise((resolve, reject) => {
@@ -56,10 +79,11 @@ export class AuthProvider {
                 .auth()
                 .signInWithEmailAndPassword(email, password)
                 .then((val: User) => {
-//                    this.updateUserData(val);
-                    if(!this.db.getUser(val.uid)){
+                    //                    this.updateUserData(val);
+                    if (!this.db.getUser(val.uid)) {
                         this.db.updateUserData(val)
                     }
+                    this.user = this.db.getUser(val.uid);
                     resolve(val);
                 })
                 .catch((error: any) => {
@@ -68,7 +92,7 @@ export class AuthProvider {
                 });
         });
     }
-    
+
 
 
     signOut() {

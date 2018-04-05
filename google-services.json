@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "514247118675",
+    "firebase_url": "https://materialtarsis.firebaseio.com",
+    "project_id": "materialtarsis",
+    "storage_bucket": "materialtarsis.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514247118675:android:8d403e7379e01550",
+        "android_client_info": {
+          "package_name": "material.tarsis.org"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "514247118675-398n6m933ur43maj06u61t96234jsont.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt8gV3xy6SneRjpaB6dNIowqaAacIps5g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

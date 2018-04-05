@@ -8,6 +8,12 @@ import {Config, Ion} from "ionic-angular";
 export class FaIconComponent extends Ion implements OnChanges {
   @Input() name: string;
   @Input() size: string;
+  @Input("facls")
+  set facls(facls:string){
+    this.setElementClass("fa", false);
+    this.setElementClass(facls, true);
+      
+  }
 
   @Input("fixed-width")
   set fixedWidth(fixedWidth: string) {
