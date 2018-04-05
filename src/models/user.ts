@@ -6,4 +6,5 @@ export interface User {
   displayName?: string;
   cargo?:string;
   rol?:number;
+  token?:string;
 }

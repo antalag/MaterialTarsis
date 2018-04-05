@@ -56,7 +56,8 @@ export class DatabaseProvider {
             displayName: user.displayName,
             photoURL: user.photoURL,
             cargo: user.cargo,
-            rol: user.rol
+            rol: user.rol,
+            token: user.token
         }
 
         return userRef.set(data, {merge: true})

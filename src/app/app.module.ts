@@ -19,6 +19,7 @@ import {ComponentsModule} from '../components/components.module'
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { Firebase } from '@ionic-native/firebase';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -81,6 +82,7 @@ moment.tz.setDefault(moment.tz.guess());
   providers: [
     StatusBar,
     SplashScreen,
+    Firebase,
     AngularFirestoreModule,
     { provide: LOCALE_ID, useValue: 'es' } ,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
