@@ -28,6 +28,7 @@ export class AuthProvider {
                 if (!this.db.getUser(result.user.uid)) {
                     this.db.updateUserData(result.user)
                 }
+                this.user = this.db.getUser(result.user.uid);
             }
         }).catch(error => {
             this.utils.showToast("Ha ocurrido un error, comprueba los campos e intentalo de nuevo más tarde");

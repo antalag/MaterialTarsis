@@ -70,27 +70,26 @@ exports.sendFollowerNotification = functions.firestore.document('/salidas/{salid
         .onWrite((salida, context) => {
             if (salida.after) {
                 const data = salida.after.data();
-                console.log("data.user", data.user);
                 const userData = firestore.doc(`/users/${data.user}`);
-                userData.get().then(doc => {
-                    console.log(doc);
+                return userData.get().then(doc => {
                     const user = doc.data();
-                    console.log("user", user);
                     const matData = firestore.doc(`/material/${data.material}`);
-                    matData.get().then(doc => {
+                    return matData.get().then(doc => {
                         const material = doc.data();
-                        console.log("material", material);
                         const payload = {
                             notification: {
                                 title: 'Cambios en material',
                             }
                         };
                         const action = data.fechaEntrada ? "devuelto" : "sacado";
-                        payload.notification.body = `${user.displayName} ha ${action} el material: ${material.nombre}`;
-                        firestore.collection('/users').get().then(querySnapshot => {
+                        payload.notification.body = `${user.displayName} ha ${action} el material: ${material.nombre}. Comentarios: ${data.comentarios}`;
+                        return firestore.collection('/users').get().then(querySnapshot => {
                             const tokens = []
                             querySnapshot.forEach(documentSnapshot => {
+                                let dataDoc = documentSnapshot.data();
+                                if(dataDoc.token){
                                 tokens.push(documentSnapshot.data().token)
+                                }
                             });
                             return admin.messaging().sendToDevice(tokens, payload);
                         });
