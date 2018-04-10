@@ -43,6 +43,7 @@ export class PerfilPage {
             uid: [this.user.uid],
             cargo: [this.user.cargo ? this.user.cargo : 'scouter'],
             rol: [this.user.rol ? this.user.rol : 3],
+            token: [this.user.token],
             photoURL: [this.user.photoURL],
         });
     }

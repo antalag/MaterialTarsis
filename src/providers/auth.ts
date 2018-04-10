@@ -23,11 +23,8 @@ export class AuthProvider {
         private db: DatabaseProvider,
         private utils: UtilsProvider) {
         this.afAuth.auth.getRedirectResult().then(result => {
-            console.log('result1',result);
             if (result.credential) {
-                if (!this.db.getUser(result.user.uid)) {
-                    this.db.updateUserData(result.user)
-                }
+                this.db.creteUserIfNotExists(result.user)
                 this.user = this.db.getUser(result.user.uid);
             }
         }).catch(error => {
@@ -35,7 +32,6 @@ export class AuthProvider {
         });
         this.user = this.afAuth.authState
             .switchMap(user => {
-                console.log(user);
                 if (user) {
                     return this.db.getUser(user.uid);
                 } else {
@@ -51,26 +47,27 @@ export class AuthProvider {
         return this.afAuth.auth.signInWithRedirect(provider)
             .then((S) => {
                 this.afAuth.auth.getRedirectResult().then(result => {
-                    console.log('result2',result);
                     if (result.credential) {
-                        if (!this.db.getUser(result.user.uid)) {
-                            this.db.updateUserData(result.user)
-                        }
-                        this.user = this.afAuth.authState
-            .switchMap(user => {
-                console.log(user);
-                if (user) {
-                    return this.db.getUser(user.uid);
-                } else {
-                    return Observable.of(null)
-                }
-            })
+                        this.db.creteUserIfNotExists(result.user).then(
+                            () => {
+                                this.user = this.afAuth.authState
+                                    .switchMap(user => {
+                                        console.log(user);
+                                        if (user) {
+                                            return this.db.getUser(user.uid);
+                                        } else {
+                                            return Observable.of(null)
+                                        }
+                                    })
+                            }
+                        )
                     }
                 })
             }).catch(function (error) {
+                console.log(error);
                 // Handle Errors here.
-                var errorCode = error.code;
-                var errorMessage = error.message;
+                //                var errorCode = error.code;
+                //                var errorMessage = error.message;
             });
 
     }
@@ -81,9 +78,7 @@ export class AuthProvider {
                 .signInWithEmailAndPassword(email, password)
                 .then((val: User) => {
                     //                    this.updateUserData(val);
-                    if (!this.db.getUser(val.uid)) {
-                        this.db.updateUserData(val)
-                    }
+                    this.db.creteUserIfNotExists(val)
                     this.user = this.db.getUser(val.uid);
                     resolve(val);
                 })
@@ -92,6 +87,17 @@ export class AuthProvider {
                     reject(error);
                 });
         });
+    }
+
+    getUser() {
+        return this.afAuth.authState
+            .switchMap(user => {
+                if (user) {
+                    return this.db.getUser(user.uid);
+                } else {
+                    return Observable.of(null)
+                }
+            })
     }
 
 

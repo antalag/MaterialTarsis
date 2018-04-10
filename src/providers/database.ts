@@ -1,20 +1,26 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
+import {AngularFireAuth} from 'angularfire2/auth';
 import {Material} from '../models/material';
 import {Categoria} from '../models/categoria';
 import {User} from '../models/user';
 import {Salida} from '../models/salida';
 import * as moment from 'moment';
-
+import {DocumentReference} from '@firebase/firestore-types';
+import * as firebase from 'firebase/app';
+import {firebaseConfig} from '../app/app.module';
 /*
   Generated class for the DatabaseProvider provider.
 
   See https://angular.io/guide/dependency-injection for more info on providers
   and Angular DI.
 */
+
 @Injectable()
 export class DatabaseProvider {
-    constructor(private afs: AngularFirestore) {
+    private fb2: firebase.app.App;
+    constructor(private afs: AngularFirestore, private auth: AngularFireAuth) {
+        this.fb2 = firebase.initializeApp(firebaseConfig,"secondary");
     }
     getUser(uid) {
         return this.afs.doc<User>(`users/${uid}`).snapshotChanges()
@@ -63,6 +69,25 @@ export class DatabaseProvider {
         return userRef.set(data, {merge: true})
 
     }
+    public creteUserIfNotExists(user: User) {
+        const userDocRef: DocumentReference = this.afs.firestore.doc(`users/${user.uid}`);
+        return userDocRef.get().then(docSnap => {
+            if (!docSnap.exists) {
+                const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.uid}`);
+                const data = {
+                    id: user.uid,
+                    uid: user.uid,
+                    email: user.email,
+                    displayName: user.email,
+                    photoURL: "",
+                    cargo: "scouter",
+                    rol: 3
+                };
+                userRef.set(data, {merge: true});
+            }
+        })
+
+    }
     public updateMaterialData(material: Material) {
         // Sets user data to firestore on login
         const data = {
@@ -88,19 +113,19 @@ export class DatabaseProvider {
         const materialcollection = this.afs.collection<any>('material');
         return materialcollection.add(data);
     }
-    deleteMaterial(material:Material){
+    deleteMaterial(material: Material) {
         const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material.id}`);
         console.log(material.id);
         let batch = this.afs.firestore.batch();
         batch.delete(materialRef.ref);
-        return this.afs.collection('salidas').ref.where("material", "==", material.id).get().then(result=>{
-            result.forEach(doc=>{
+        return this.afs.collection('salidas').ref.where("material", "==", material.id).get().then(result => {
+            result.forEach(doc => {
                 console.log(doc);
                 batch.delete(doc.ref);
             })
             return batch.commit();
         })
-//        return materialRef.delete();
+        //        return materialRef.delete();
     }
     public updateCategoriaData(categoria: Categoria) {
         // Sets user data to firestore on login
@@ -119,7 +144,7 @@ export class DatabaseProvider {
         const materialcollection = this.afs.collection<any>('categorias');
         return materialcollection.add(data);
     }
-    deleteCategoria(categoria:Categoria){
+    deleteCategoria(categoria: Categoria) {
         const categoRef: AngularFirestoreDocument<any> = this.afs.doc(`categorias/${categoria.id}`);
         return categoRef.delete();
     }
@@ -181,6 +206,55 @@ export class DatabaseProvider {
                 return {id, ...data};
             });
         });
+    }
+    getUsers() {
+        return this.afs.collection('users').snapshotChanges().map(actions => {
+            return actions.map(a => {
+                const data = a.payload.doc.data() as User;
+                const id = a.payload.doc.id;
+                return {id, ...data};
+            });
+        });
+    }
+    deleteUser(user: User) {
+        const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${user.id}`);
+        let batch = this.afs.firestore.batch();
+        batch.delete(userRef.ref);
+        return this.afs.collection('salidas').ref.where("user", "==", user.id).get().then(result => {
+            result.forEach(doc => {
+                batch.update(doc.ref, {user: user.email});
+            })
+            return batch.commit();
+        })
+    }
+    insertUser(usuario: {
+        id: string,
+        uid: string,
+        email: string,
+        displayName: string,
+        photoURL: string,
+        cargo: string,
+        rol: string,
+        token: string,
+        password: string
+    }) {
+        return this.fb2.auth().createUserWithEmailAndPassword(usuario.email, usuario.password).then(
+            (result:{uid: string}) => {
+                const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${result.uid}`);
+                const data = {
+                    id: result.uid,
+                    uid: result.uid,
+                    email: usuario.email,
+                    displayName: usuario.displayName,
+                    photoURL: "",
+                    cargo: usuario.cargo,
+                    rol: usuario.rol
+                }
+                return userRef.set(data, {merge: true})
+            }
+        ).catch(error=>{
+            throw error;
+        })
     }
     getMaterialesFromCategory(category, filter?: string) {
         if (filter) {

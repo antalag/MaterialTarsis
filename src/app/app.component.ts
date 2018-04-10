@@ -14,6 +14,9 @@ import {User} from '../models/user';
 import {PerfilPage} from '../pages/perfil/perfil';
 import {EditMaterialPage} from '../pages/edit-material/edit-material';
 import {EditCategoriasPage} from '../pages/edit-categorias/edit-categorias';
+import {ListUsuariosPage} from '../pages/list-usuarios/list-usuarios';
+
+let cordova:any;
 
 @Component({
     templateUrl: 'app.html'
@@ -27,10 +30,13 @@ export class MyApp {
     user: Observable<User> = null;
 
     constructor(public platform: Platform, private db: DatabaseProvider, private firebase: Firebase, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth: AuthProvider) {
-        this.user = this.auth.user.map(user => {
-            if (user.payload) {
+        console.log(this);
+        this.user = this.auth.getUser().map(user => {
+            
+            if (user && user.payload) {
                 const data = user.payload.data() as User;
                 data.id = user.payload.id;
+                if(cordova){
                 this.firebase.getToken()
                     .then(token => {
                         data.token = token;
@@ -42,6 +48,7 @@ export class MyApp {
                         data.token = token;
                         this.db.updateUserData(data);
                     });
+                }
                 return data;
             } else {
                 return null;
@@ -64,6 +71,9 @@ export class MyApp {
     }
     editCategories() {
         this.nav.push(EditCategoriasPage);
+    }
+    editUsers() {
+        this.nav.push(ListUsuariosPage);
     }
     editPerfil() {
         this.user.map(user => {

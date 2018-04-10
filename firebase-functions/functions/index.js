@@ -87,8 +87,8 @@ exports.sendFollowerNotification = functions.firestore.document('/salidas/{salid
                             const tokens = []
                             querySnapshot.forEach(documentSnapshot => {
                                 let dataDoc = documentSnapshot.data();
-                                if(dataDoc.token){
-                                tokens.push(documentSnapshot.data().token)
+                                if (dataDoc.token) {
+                                    tokens.push(documentSnapshot.data().token)
                                 }
                             });
                             return admin.messaging().sendToDevice(tokens, payload);
@@ -99,4 +99,18 @@ exports.sendFollowerNotification = functions.firestore.document('/salidas/{salid
             } else {
                 return null
             }
+        })
+
+exports.deleteUser = functions.firestore.document('/users/{userId}')
+        .onDelete((user, context) => {
+            console.log(user);
+            let data = user.data();
+            return admin.auth().deleteUser(data.uid)
+                    .then(function () {
+                        console.log("Successfully deleted user");
+                    })
+                    .catch(function (error) {
+                        console.log("Error deleting user:", error);
+                    });
+
         })
