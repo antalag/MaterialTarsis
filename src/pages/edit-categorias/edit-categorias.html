@@ -11,6 +11,9 @@
 <ion-list *ngIf="items | async as items">
   <ion-item-sliding *ngFor="let item of items">
     <ion-item>
+        <ion-avatar item-start>
+        <img [src]="item.image |thumb:64 | async | safeHtml">
+      </ion-avatar>
       <h2>{{item.nombre}}</h2>
     </ion-item>
       <ion-item-options side="left">
@@ -29,7 +32,7 @@
 <ion-footer>
     <ion-buttons>
         <button ion-button icon-left color="primary" (click)="insertCategoria()">
-            <fa-icon name="categorias"></fa-icon>
+            <fa-icon name="wrench"></fa-icon>
             Crear Nueva
         </button>
     </ion-buttons>

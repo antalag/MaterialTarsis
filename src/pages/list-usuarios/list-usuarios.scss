@@ -1,3 +1,18 @@
 page-list-usuarios {
+    ion-avatar{
 
+        fa-icon{
+            border-radius: 50%;
+            overflow: hidden;
+            width: 40px;
+            height: 40px;
+            background: color($colors,primary,base);
+            color: color($colors,primary,contrast);
+            line-height: 40px !important;
+            text-align: center;
+        }
+        img{
+            background: color($colors,primary,base);
+        }
+    } 
 }

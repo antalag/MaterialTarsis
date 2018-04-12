@@ -39,7 +39,10 @@ $fa-font-path: $font-path;
 // The "primary" color is the only required color in the map.
 
 $colors: (
-  primary:    #488aff,
+  primary:(
+    base:#488aff,
+    contrast:#fff
+  ),
   secondary:  #f4f4f4,
   danger:     #f53d3d,
   light:      #fffc5d,

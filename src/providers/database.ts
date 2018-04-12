@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {AngularFirestore, AngularFirestoreDocument} from 'angularfire2/firestore';
-import {AngularFireAuth} from 'angularfire2/auth';
 import {Material} from '../models/material';
 import {Categoria} from '../models/categoria';
 import {User} from '../models/user';
@@ -19,7 +18,7 @@ import {firebaseConfig} from '../app/app.module';
 @Injectable()
 export class DatabaseProvider {
     private fb2: firebase.app.App;
-    constructor(private afs: AngularFirestore, private auth: AngularFireAuth) {
+    constructor(private afs: AngularFirestore) {
         this.fb2 = firebase.initializeApp(firebaseConfig,"secondary");
     }
     getUser(uid) {

@@ -11,6 +11,10 @@
 <ion-list *ngIf="items | async as items">
   <ion-item-sliding *ngFor="let item of items">
     <ion-item>
+        <ion-avatar item-start color="primary">
+        <img *ngIf="item.photoURL" [src]="item.photoURL |thumb:64 | async | safeHtml">
+            <fa-icon *ngIf="!item.photoURL" name="user"></fa-icon>
+      </ion-avatar>
       <h2>{{item.displayName}} - {{item.email}}</h2>
     </ion-item>
       <ion-item-options side="left">
@@ -29,8 +33,8 @@
 <ion-footer>
     <ion-buttons>
         <button ion-button icon-left color="primary" (click)="insertUsuario()">
-            <fa-icon name="categorias"></fa-icon>
-            Crear Nueva
+            <fa-icon name="user-plus"></fa-icon>
+            Crear Nuevo
         </button>
     </ion-buttons>
 </ion-footer>
