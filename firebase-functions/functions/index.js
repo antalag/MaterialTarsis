@@ -5,14 +5,12 @@ const _ = require('lodash');
 const path = require('path');
 const os = require('os');
 const admin = require('firebase-admin');
+const csv=require('csvtojson');
 admin.initializeApp();
 const firestore = admin.firestore();
 
 exports.generateThumbnail = functions.storage.object().onFinalize(event => {
-    console.log(event);
     const object = event; // The Storage object.
-
-    console.log(object)
 
     const fileBucket = object.bucket; // The Storage bucket that contains the file.
     const filePath = object.name; // File path in the bucket.
@@ -58,6 +56,30 @@ exports.generateThumbnail = functions.storage.object().onFinalize(event => {
                     });
 
         })
+    })
+})
+exports.importCsv = functions.storage.object().onFinalize(event => {
+    const object = event; // The Storage object.
+
+    const fileBucket = object.bucket; // The Storage bucket that contains the file.
+    const filePath = object.name; // File path in the bucket.
+    const contentType = object.contentType; // File content type.
+    const resourceState = object.resourceState; // The resourceState is 'exists' or 'not_exists' (for file/folder deletions).
+    const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
+    if (!contentType.equals('text/csv') || resourceState == 'not_exists') {
+        console.log('No es un CSV.');
+        return;
+    }
+    const bucket = gcs.bucket(fileBucket);
+    const stream = bucket.file(filePath).createReadStream();
+    return csv.fromStream(stream).on('csv',(row)=>{
+        console.log(row);
+    }).on('done',(error)=>{
+        if(error){
+            return error
+        }else{
+            return null;
+        }
     })
 })
 // // Create and Deploy Your First Cloud Functions
