@@ -14,6 +14,7 @@ export class HomePage {
     items: Observable<Categoria[]>;
     constructor(public navCtrl: NavController, private db: DatabaseProvider) {
         this.items = this.db.getCategories();
+        console.log(this.items);
     }
     goToCategorie(cat: Categoria){
         this.navCtrl.push(ListPage, {category: cat.nombre})
