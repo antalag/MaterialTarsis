@@ -8,62 +8,77 @@
 </ion-header>
 
 
-<ion-content padding>
-    <div *ngIf="(material | async) as material">
-        <h1>{{material.nombre}}</h1>
-        <img *ngIf="(material)?.imagen" [src]="material?.imagen | thumb:512 | async | safeHtml"/>
-        <h2>Descripción:</h2>
-        <p>{{material?.comentarios}}</p>
-        <h2>Ubicación:</h2>
-        <p>{{material?.ubicacion}}</p>
-        <ion-list class="listaSalidas">
-            <ion-list-header class="cabeceraLista">Salidas</ion-list-header>
-            <ion-item *ngFor="let salida of salidas | async">
-                <ion-list no-padding class="itemsSalidas">
-                    <ion-item *ngIf="(salida.user | async) as user" no-padding text-wrap>
-                        <ion-icon name="person" color="primary" item-start></ion-icon>
-                        {{user.displayName}}
-                    </ion-item>
-                    <ion-item no-padding text-wrap>
-                        <ion-icon name="arrow-back" color="primary" item-start></ion-icon> 
-                        {{salida.fechaSalida | amDateFormat:'dddd, DD/MM/YYYY [a las] HH:mm'}} 
-                    </ion-item>
-                    <ion-item *ngIf="salida.fechaEntrada" no-padding text-wrap>
-                        <ion-icon name="arrow-forward" color="primary" item-start></ion-icon> 
-                        {{salida.fechaEntrada | amDateFormat:'dddd, DD/MM/YYYY [a las] HH:mm'}} 
-                    </ion-item>
-                    <ion-item *ngIf="salida.comentarios" text-wrap no-padding>
-                        <ion-icon name="chatbubbles" color="primary" item-start></ion-icon> 
-                        {{salida.comentarios}} 
-                    </ion-item>
-                </ion-list>
-            </ion-item>
-        </ion-list>
-    </div>
+<ion-content>
+    <ion-row *ngIf="(material | async) as material">
+        <ion-col col-12 padding>
+            <h1>{{material.nombre}}</h1>
+            <img *ngIf="(material)?.imagen" [src]="material?.imagen | thumb:512 | async | safeHtml"/>
+                <h2>Descripción:</h2>
+            <p>{{material?.comentarios}}</p>
+            <h2>Ubicación:</h2>
+            <p>{{material?.ubicacion}}</p>
+            <h2>Cantidad:</h2>
+            <p>{{material?.cantidad}}</p>
+            <ion-list class="listaSalidas">
+                <ion-list-header class="cabeceraLista">Salidas</ion-list-header>
+                <ion-item *ngFor="let salida of salidas | async">
+                    <ion-list no-padding class="itemsSalidas" *ngIf="(salida.user | async) as user">
+                          <ion-item no-padding text-wrap>
+                            <ion-icon name="person" color="primary" item-start></ion-icon>
+                            {{user.displayName}}
+                        </ion-item>
+                        <ion-item no-padding text-wrap>
+                            <ion-icon name="arrow-back" color="primary" item-start></ion-icon> 
+                            {{salida.fechaSalida | amDateFormat:'dddd, DD/MM/YYYY [a las] HH:mm'}} 
+                        </ion-item>
+                        <ion-item *ngIf="salida.fechaEntrada" no-padding text-wrap>
+                            <ion-icon name="arrow-forward" color="primary" item-start></ion-icon> 
+                            {{salida.fechaEntrada | amDateFormat:'dddd, DD/MM/YYYY [a las] HH:mm'}} 
+                        </ion-item>
+                        <ion-item *ngIf="salida.cantidad" text-wrap no-padding>
+                            <ion-icon name="cloud-download" color="primary" item-start></ion-icon> 
+                            Cantidad Sacada: {{salida.cantidad}} 
+                        </ion-item>
+                        <ion-item *ngIf="salida.cantidaddevuelta" text-wrap no-padding>
+                            <ion-icon name="cloud-upload" color="primary" item-start></ion-icon> 
+                            Cantidad Devuleta: {{salida.cantidaddevuelta}} 
+                        </ion-item>
+                        <ion-item *ngIf="salida.comentarios" text-wrap no-padding>
+                            <ion-icon name="chatbubbles" color="primary" item-start></ion-icon> 
+                            {{salida.comentarios}} 
+                        </ion-item>
+                        <ion-item *ngIf="user.id==currentUser && (salida.cantidaddevuelta===undefined || salida.cantidaddevuelta < salida.cantidad)" text-wrap no-padding>
+                            <button ion-button icon-left block (click)="devolverMaterial(salida,material)">
+                                <ion-icon name="cloud-upload"></ion-icon>
+                                <div>Devolver material</div>
+                            </button>
+                        </ion-item>
+                    </ion-list>
+                </ion-item>
+            </ion-list>
+        </ion-col>
+    </ion-row>
 
 </ion-content>
 <ion-footer>
-    <ion-toolbar color="yellowTarsis"  *ngIf="(material | async) as material">
-        <ion-buttons start>
-            <button *ngIf="esSacable| async" ion-button icon-left clear small (click)="sacarMaterial()">
-                <ion-icon name="cloud-download"></ion-icon>
-                <div>Sacar material</div>
-            </button> 
-            <button *ngIf="esDevolvible| async | async" ion-button icon-left clear small (click)="devolverMaterial()">
-                <ion-icon name="cloud-upload"></ion-icon>
-                <div>Devolver material</div>
-            </button>
-        </ion-buttons>
-        <ion-buttons end>
-            <button *ngIf="esEditable| async" ion-button icon-left clear small (click)="editarMaterial(material)">
-                 <fa-icon name="edit"></fa-icon>
-                <div>Editar material</div>
-            </button>
-            <button *ngIf="esEditable| async" color="danger" ion-button icon-left clear small (click)="borrarMaterial(material)">
-                 <fa-icon name="trash"></fa-icon>
-                <div>Borrar material</div>
-            </button>
-            
-        </ion-buttons>
+    <ion-toolbar color="yellowTarsis">
+        <ion-row *ngIf="(material | async) as material">
+            <ion-col col-6>
+                <button *ngIf="material.cantidad>0" ion-button icon-left clear small (click)="sacarMaterial(material)">
+                    <ion-icon name="cloud-download"></ion-icon>
+                    <div>Sacar material</div>
+                </button> 
+            </ion-col>
+            <ion-col col-6>
+                <button *ngIf="esEditable" ion-button icon-left clear small (click)="editarMaterial(material)">
+                    <fa-icon name="edit"></fa-icon>
+                    <div>Editar material</div>
+                </button>
+                <button *ngIf="esEditable" color="danger" ion-button icon-left clear small (click)="borrarMaterial(material)">
+                    <fa-icon name="trash"></fa-icon>
+                    <div>Borrar material</div>
+                </button>
+            </ion-col>
+        </ion-row>
     </ion-toolbar>
 </ion-footer>

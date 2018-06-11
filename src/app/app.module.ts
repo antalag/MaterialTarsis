@@ -15,7 +15,7 @@ import {EditMaterialPage} from '../pages/edit-material/edit-material';
 import {EditCategoriasPage} from '../pages/edit-categorias/edit-categorias';
 import {ListUsuariosPage} from '../pages/list-usuarios/list-usuarios';
 import {FormUsuariosPage} from '../pages/form-usuarios/form-usuarios';
-import * as firebase from 'firebase';
+//import * as firebase from 'firebase';
 //import {ToolbarComponent} from '../components/toolbar/toolbar';
 
 import {ComponentsModule} from '../components/components.module'

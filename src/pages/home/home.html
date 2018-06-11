@@ -6,7 +6,7 @@
     <img [src]="item.image | safeHtml" />
     <div class="card-alpha"></div>
     <div class="card-title">{{item.nombre}}</div>
-    <div class="card-subtitle">41 artículos</div>
+    <div class="card-subtitle">{{item.size | async}} artículos</div>
   </ion-card>
 
 </ion-content>

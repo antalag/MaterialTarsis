@@ -1,6 +1,6 @@
 export interface Material {
     id: string,
-    cantidad: number,
+    cantidad: string,
     nombre: string,
     ubicacion: string,
     comentarios:string,
