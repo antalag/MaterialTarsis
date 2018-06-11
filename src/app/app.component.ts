@@ -30,7 +30,6 @@ export class MyApp {
     user: Observable<User> = null;
 
     constructor(public platform: Platform, private db: DatabaseProvider, private firebase: Firebase, public statusBar: StatusBar, public splashScreen: SplashScreen, private auth: AuthProvider) {
-        console.log(this);
         this.user = this.auth.getUser().map(user => {
             
             if (user && user.payload) {

@@ -12,7 +12,7 @@
   <ion-item-sliding *ngFor="let item of items">
     <ion-item>
         <ion-avatar item-start>
-        <img [src]="item.image |thumb:64 | async | safeHtml">
+        <img *ngIf="item.image" [src]="item.image |thumb:64 | async | safeHtml">
       </ion-avatar>
       <h2>{{item.nombre}}</h2>
     </ion-item>

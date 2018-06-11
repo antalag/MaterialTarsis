@@ -183,18 +183,28 @@ export class DatabaseProvider {
     getMaterial(id) {
         return this.afs.doc<Material>('material/' + id);
     }
-    insertSalidaMaterial(material, user, comentarios) {
+    insertSalidaMaterial(material, user, comentarios,cantidad,restante) {
         return this.afs.collection('salidas').add({
             material: material,
             user: user,
+            cantidad:cantidad,
             comentarios: comentarios,
             fechaSalida: moment().toDate()
+        }).then(result=>{
+            const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material}`);
+            let data = {cantidad:restante}
+            return materialRef.set(data, {merge: true})
         })
     }
-    insertEntradaMaterial(idSalida, comentarios) {
+    insertEntradaMaterial(idSalida, comentarios,cantidad,restante,material) {
         return this.afs.doc<Salida>('salidas/' + idSalida).update({
             comentarios: comentarios,
+            cantidaddevuelta:cantidad,
             fechaEntrada: moment().toDate()
+        }).then(result=>{
+            const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material}`);
+            let data = {cantidad:restante}
+            return materialRef.set(data, {merge: true})
         })
     }
     getCategories() {
@@ -202,7 +212,12 @@ export class DatabaseProvider {
             return actions.map(a => {
                 const data = a.payload.doc.data() as Categoria;
                 const id = a.payload.doc.id;
-                return {id, ...data};
+                const size = this.afs.collection('material').ref.where("categoria", "==", data.nombre).get().then(
+                (a)=>{
+                    return a.size;
+                })
+                
+                return {id,size, ...data};
             });
         });
     }

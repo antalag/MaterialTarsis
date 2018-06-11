@@ -5,7 +5,7 @@ const _ = require('lodash');
 const path = require('path');
 const os = require('os');
 const admin = require('firebase-admin');
-const csv=require('csvtojson');
+const csv = require('csvtojson');
 admin.initializeApp();
 const firestore = admin.firestore();
 
@@ -66,19 +66,40 @@ exports.importCsv = functions.storage.object().onFinalize(event => {
     const contentType = object.contentType; // File content type.
     const resourceState = object.resourceState; // The resourceState is 'exists' or 'not_exists' (for file/folder deletions).
     const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
-    if (!contentType.equals('text/csv') || resourceState == 'not_exists') {
+    if (!contentType.startsWith('text/csv') || resourceState == 'not_exists') {
         console.log('No es un CSV.');
         return;
     }
+    var db = admin.firestore();
+    var batch = db.batch();
     const bucket = gcs.bucket(fileBucket);
     const stream = bucket.file(filePath).createReadStream();
-    return csv.fromStream(stream).on('csv',(row)=>{
-        console.log(row);
-    }).on('done',(error)=>{
-        if(error){
+    var counter = 0;
+    const reader = csv({noheader: true}).fromStream(stream)
+    reader.on('csv', (row) => {
+        counter++;
+        var newMatRef = db.collection('material').doc();
+        //[ 'Nombre Prueba 4', 'ubicación prueba 4', 'Cantidad 4', 'Comentarios 4', 'Importados' ] 
+        var data = {
+            nombre: row[0],
+            ubicacion: row[1],
+            cantidad: row[2],
+            comentarios: row[3],
+            categoria: row[4],
+            imagen: null
+        };
+        batch.set(newMatRef, data);
+    })
+    return reader.on('done', (error) => {
+        if (error) {
+            console.log(error);
             return error
-        }else{
-            return null;
+        } else {
+            return batch.commit().then(function () {
+                console.log("importación completada, insertados " + counter + " registros")
+            }).catch(error => {
+                console.log(error)
+            })
         }
     })
 })

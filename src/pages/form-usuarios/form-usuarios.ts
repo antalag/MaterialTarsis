@@ -18,7 +18,6 @@ import {UtilsProvider} from '../../providers/utils';
 })
 export class FormUsuariosPage {
 
-  private base64Image;
     private formUser: FormGroup;
     private user: any;
     private title: string;

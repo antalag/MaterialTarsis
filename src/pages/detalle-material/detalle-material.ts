@@ -1,16 +1,16 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
-import { AngularFirestoreDocument } from 'angularfire2/firestore';
-import { Material } from '../../models/material'
-import { Observable } from 'rxjs/Observable';
+import {Component} from '@angular/core';
+import {NavController, NavParams} from 'ionic-angular';
+import {AngularFirestoreDocument} from 'angularfire2/firestore';
+import {Material} from '../../models/material'
+import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/combineLatest';
 import 'rxjs/add/operator/reduce';
-import { AlertController } from 'ionic-angular';
-import { DatabaseProvider } from '../../providers/database';
-import { AuthProvider } from '../../providers/auth';
-import { User } from '../../models/user';
-import { EditMaterialPage } from '../edit-material/edit-material';
-import { Salida } from '../../models/salida';
+import {AlertController} from 'ionic-angular';
+import {DatabaseProvider} from '../../providers/database';
+import {AuthProvider} from '../../providers/auth';
+import {User} from '../../models/user';
+import {EditMaterialPage} from '../edit-material/edit-material';
+import {Salida} from '../../models/salida';
 import {UtilsProvider} from '../../providers/utils';
 
 /**
@@ -29,14 +29,14 @@ export class DetalleMaterialPage {
     private material: Observable<Material>;
     private salidas: Observable<Salida[]>;
     private salidaADevolver: Salida;
-    private esDevolvible: Observable<Observable<boolean>> = Observable.of(Observable.of(false));
-    private esSacable: Observable<boolean> = Observable.of(false);
-    private esEditable: Observable<boolean> = Observable.of(false);
-    constructor(public navCtrl: NavController, 
-        public navParams: NavParams, 
-        private db: DatabaseProvider, 
-        private auth: AuthProvider, 
-        private utils:UtilsProvider,
+    private esEditable: boolean = false;
+    private currentUser;
+
+    constructor(public navCtrl: NavController,
+        public navParams: NavParams,
+        private db: DatabaseProvider,
+        private auth: AuthProvider,
+        private utils: UtilsProvider,
         private alert: AlertController) {
     }
     ionViewWillEnter() {
@@ -44,31 +44,23 @@ export class DetalleMaterialPage {
         this.material = this.materialDoc.snapshotChanges().map(a => {
             const data = a.payload.data() as Material;
             const id = a.payload.id;
-            return { id, ...data };
+            return {id, ...data};
         });
         //        this.materialDoc.collection<Salida>('salidas').valueChanges();
         this.salidas = this.db.getSalidasMaterial(this.navParams.get("item").id);
-        this.getActions();
-    }
-    getActions(){
-        this.getDevolvible();
-        this.getSacable();
-        this.getEditable();
-    }
-    getEditable() {
-        this.esEditable = this.auth.user.map(user => {
+        this.auth.user.map(user => {
+            const id = user.payload.id;
             let data = user.payload.data() as User;
-            if (data.rol <= 3) {
-                return true;
-            } else {
-                return false;
-            }
+            return {id, ...data};
+        }).subscribe((user: User) => {
+            this.currentUser = user.id;
+            this.esEditable = (user.rol <= 3)
         })
     }
     editarMaterial(material) {
-        this.navCtrl.push(EditMaterialPage, { material: material as Material })
+        this.navCtrl.push(EditMaterialPage, {material: material as Material})
     }
-    borrarMaterial(mat:Material) { 
+    borrarMaterial(mat: Material) {
         let alert = this.alert.create({
             title: "Confirmar borrado",
             message: "¿Estas seguro que deseas borrar este material?",
@@ -89,7 +81,8 @@ export class DetalleMaterialPage {
         });
         alert.present();
     }
-    sacarMaterial() {
+    sacarMaterial(mat: Material) {
+
         let alert = this.alert.create({
             title: 'Sacar Material',
             message: "Añade comentarios: motivo, plazo de devolución...",
@@ -97,6 +90,14 @@ export class DetalleMaterialPage {
                 {
                     name: 'comentarios',
                     placeholder: 'Comentarios'
+                },
+                {
+                    name: 'cantidad',
+                    placeholder: 'cantidad',
+                    value: "1",
+                    max: mat.cantidad,
+                    min: 1,
+                    type: 'number'
                 }
             ],
             buttons: [
@@ -106,13 +107,13 @@ export class DetalleMaterialPage {
                 },
                 {
                     text: 'Sacar',
-                    handler: data => {
+                    handler: (data: {comentarios: string, cantidad: string}) => {
+                        let restante: number = parseInt(mat.cantidad) - parseInt(data.cantidad);
                         this.auth.user.map(user => {
                             const id = user.payload.id;
                             return id;
                         }).subscribe(user => {
-                            this.db.insertSalidaMaterial(this.navParams.get("item").id, user, data.comentarios).then(result => {
-//                                this.getActions();
+                            this.db.insertSalidaMaterial(this.navParams.get("item").id, user, data.comentarios, parseInt(data.cantidad), restante).then(result => {
                                 this.utils.showToast("Insertada salida de material");
                             }).catch(error => {
                                 this.utils.showToast("Error:" + error);
@@ -124,18 +125,25 @@ export class DetalleMaterialPage {
             ]
         });
         alert.present();
-
     }
-    devolverMaterial() {
+    devolverMaterial(salida: Salida, mat: Material) {
         this.salidaADevolver;
         let alert = this.alert.create({
-            title: 'Sacar Material',
+            title: 'Devolver Material',
             message: "Añade comentarios: estado del material...",
             inputs: [
                 {
                     name: 'comentarios',
                     placeholder: 'Comentarios',
-                    value: this.salidaADevolver.comentarios
+                    value: salida.comentarios
+                },
+                {
+                    name: 'cantidad',
+                    placeholder: 'cantidad',
+                    value: "1",
+                    max: (salida.cantidaddevuelta) ? salida.cantidad - salida.cantidaddevuelta : salida.cantidad,
+                    min: 1,
+                    type: 'number'
                 }
             ],
             buttons: [
@@ -145,12 +153,13 @@ export class DetalleMaterialPage {
                 },
                 {
                     text: 'Devolver',
-                    handler: data => {
-                        this.db.insertEntradaMaterial(this.salidaADevolver.id, data.comentarios).then(result => {
+                    handler: (data: {comentarios: string, cantidad: string}) => {
+                        let restante: number = parseInt(mat.cantidad) + parseInt(data.cantidad);
+                        let cantidad:number =(salida.cantidaddevuelta)?parseInt(data.cantidad)+parseInt(salida.cantidaddevuelta.toString()):parseInt(data.cantidad)
+                        this.db.insertEntradaMaterial(salida.id, data.comentarios, cantidad, restante, mat.id).then(result => {
                             this.utils.showToast("Insertada devolución de material");
-//                            this.getActions();
                         }).catch(error => {
-                            this.utils.showToast("Error: "+error);
+                            this.utils.showToast("Error: " + error);
                         })
                     }
                 }
@@ -158,60 +167,4 @@ export class DetalleMaterialPage {
         });
         alert.present();
     }
-    getSacable() {
-        this.esSacable = this.salidas.map(salidas => {
-            let retorno = true;
-            salidas.forEach(salida => {
-                if (!salida.fechaEntrada) {
-                    retorno = false;
-                }
-            });
-            return retorno;
-        })
-    }
-    getDevolvible() {
-        this.esDevolvible = this.salidas.map((salidas) => {
-            return salidas.reduce((result: Observable<boolean>, salida: Salida) => {
-                if (salida.fechaEntrada) {
-                    return result;
-                }
-                let obsrUser: Observable<string> = this.auth.user.map(user => {
-                    const id = user.payload.id;
-                    return id
-                })
-                let obsrUserSal: Observable<string> = salida.user.map(user => {
-                    return user.id;
-                })
-                let obserComb: Observable<boolean> = obsrUserSal.combineLatest(obsrUser, (a, b) => {
-                    if(a==b){
-                        this.salidaADevolver = salida;
-                    }
-                    return a==b
-                })
-                return obserComb;
-            }, Observable.of(false))
-        })
-        // this.esDevolvible = this.salidas.map(salidas => {
-        //     salidas.forEach(salida => {
-        //         if (!salida.fechaEntrada) {
-        //             let obsrUser: Observable<string> = this.auth.user.map(user => {
-        //                 const id = user.payload.id;
-        //                 return id
-        //             })
-        //             let obsrUserSal: Observable<string> = salida.user.map(user => {
-        //                 return user.id;
-        //             })
-        //             return obsrUserSal.combineLatest(obsrUser, (a, b) => {
-        //                 if (a == b) {
-        //                     this.salidaADevolver = salida;
-        //                 }
-        //                 return a == b;
-        //             }).map(result => {
-        //                 return result;
-        //             });
-        //         }
-        //     })
-        // })
-    }
-
 }
