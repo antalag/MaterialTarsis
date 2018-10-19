@@ -19,7 +19,7 @@ import {firebaseConfig} from '../app/app.module';
 export class DatabaseProvider {
     private fb2: firebase.app.App;
     constructor(private afs: AngularFirestore) {
-        this.fb2 = firebase.initializeApp(firebaseConfig,"secondary");
+        this.fb2 = firebase.initializeApp(firebaseConfig, "secondary");
     }
     getUser(uid) {
         return this.afs.doc<User>(`users/${uid}`).snapshotChanges()
@@ -165,7 +165,11 @@ export class DatabaseProvider {
                     const id = a.payload.doc.id;
                     return {id, ...data};
                 }).filter(item => {
-                    if ((item.nombre.toLowerCase().indexOf(filter.toLowerCase()) > -1 || item.ubicacion.toLowerCase().indexOf(filter.toLowerCase()) > -1)) {
+                    if (
+                        (item.nombre && item.nombre.toLowerCase().indexOf(filter.toLowerCase()) > -1) ||
+                        (item.ubicacion || item.ubicacion.toLowerCase().indexOf(filter.toLowerCase()) > -1) ||
+                        (item.comentarios || item.comentarios.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+                    ) {
                         return true;
                     }
                 });
@@ -183,27 +187,27 @@ export class DatabaseProvider {
     getMaterial(id) {
         return this.afs.doc<Material>('material/' + id);
     }
-    insertSalidaMaterial(material, user, comentarios,cantidad,restante) {
+    insertSalidaMaterial(material, user, comentarios, cantidad, restante) {
         return this.afs.collection('salidas').add({
             material: material,
             user: user,
-            cantidad:cantidad,
+            cantidad: cantidad,
             comentarios: comentarios,
             fechaSalida: moment().toDate()
-        }).then(result=>{
+        }).then(result => {
             const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material}`);
-            let data = {cantidad:restante}
+            let data = {cantidad: restante}
             return materialRef.set(data, {merge: true})
         })
     }
-    insertEntradaMaterial(idSalida, comentarios,cantidad,restante,material) {
+    insertEntradaMaterial(idSalida, comentarios, cantidad, restante, material) {
         return this.afs.doc<Salida>('salidas/' + idSalida).update({
             comentarios: comentarios,
-            cantidaddevuelta:cantidad,
+            cantidaddevuelta: cantidad,
             fechaEntrada: moment().toDate()
-        }).then(result=>{
+        }).then(result => {
             const materialRef: AngularFirestoreDocument<any> = this.afs.doc(`material/${material}`);
-            let data = {cantidad:restante}
+            let data = {cantidad: restante}
             return materialRef.set(data, {merge: true})
         })
     }
@@ -213,11 +217,11 @@ export class DatabaseProvider {
                 const data = a.payload.doc.data() as Categoria;
                 const id = a.payload.doc.id;
                 const size = this.afs.collection('material').ref.where("categoria", "==", data.nombre).get().then(
-                (a)=>{
-                    return a.size;
-                })
-                
-                return {id,size, ...data};
+                    (a) => {
+                        return a.size;
+                    })
+
+                return {id, size, ...data};
             });
         });
     }
@@ -253,7 +257,7 @@ export class DatabaseProvider {
         password: string
     }) {
         return this.fb2.auth().createUserWithEmailAndPassword(usuario.email, usuario.password).then(
-            (result:{uid: string}) => {
+            (result: {uid: string}) => {
                 const userRef: AngularFirestoreDocument<any> = this.afs.doc(`users/${result.uid}`);
                 const data = {
                     id: result.uid,
@@ -266,7 +270,7 @@ export class DatabaseProvider {
                 }
                 return userRef.set(data, {merge: true})
             }
-        ).catch(error=>{
+        ).catch(error => {
             throw error;
         })
     }
@@ -279,7 +283,11 @@ export class DatabaseProvider {
                         const id = a.payload.doc.id;
                         return {id, ...data};
                     }).filter(item => {
-                        if ((item.nombre.toLowerCase().indexOf(filter.toLowerCase()) > -1 || item.ubicacion.toLowerCase().indexOf(filter.toLowerCase()) > -1)) {
+                        if (
+                            (item.nombre && item.nombre.toLowerCase().indexOf(filter.toLowerCase()) > -1) ||
+                            (item.ubicacion || item.ubicacion.toLowerCase().indexOf(filter.toLowerCase()) > -1) ||
+                            (item.comentarios || item.comentarios.toLowerCase().indexOf(filter.toLowerCase()) > -1)
+                        ) {
                             return true;
                         }
                     });
