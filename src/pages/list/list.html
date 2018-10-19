@@ -2,7 +2,7 @@
 <ion-content>
     <ion-grid>
         <ion-row>
-            <ion-col col-6 *ngFor="let item of items | async">
+            <ion-col col-6 col-sm-4 *ngFor="let item of items | async">
                      <ion-card (click)="itemTapped(item)">
                     <img *ngIf="item.imagen" [src]="item.imagen | thumb:256 | async | safeHtml" />
                     <ion-card-content>

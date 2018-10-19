@@ -1,12 +1,16 @@
 <ion-header class="toolbar" name="Inicio"></ion-header>
 
 <ion-content padding class="card-background-page">
+    <ion-row>
+        <ion-col fixed col-12 col-sm-6 *ngFor="let item of items | async">
 
-  <ion-card *ngFor="let item of items | async" (click)="goToCategorie(item)">
-    <img [src]="item.image | safeHtml" />
-    <div class="card-alpha"></div>
-    <div class="card-title">{{item.nombre}}</div>
-    <div class="card-subtitle">{{item.size | async}} artículos</div>
-  </ion-card>
+            <ion-card (click)="goToCategorie(item)">
+                <img [src]="item.image | safeHtml" />
+                    <div class="card-alpha"></div>
+                <div class="card-title">{{item.nombre}}</div>
+                <div class="card-subtitle">{{item.size | async}} artículos</div>
+            </ion-card>
+        </ion-col>
+    </ion-row>
 
 </ion-content>

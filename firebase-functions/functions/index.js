@@ -8,6 +8,8 @@ const admin = require('firebase-admin');
 const csv = require('csvtojson');
 admin.initializeApp();
 const firestore = admin.firestore();
+const settings = {/* your settings... */ timestampsInSnapshots: true};
+firestore.settings(settings);
 
 exports.generateThumbnail = functions.storage.object().onFinalize(event => {
     const object = event; // The Storage object.
@@ -22,12 +24,12 @@ exports.generateThumbnail = functions.storage.object().onFinalize(event => {
 
     if (!contentType.startsWith('image/') || resourceState == 'not_exists') {
         console.log('This is not an image.');
-        return;
+        return false;
     }
 
     if (_.includes(filePath, '_thumb')) {
         console.log('already processed image');
-        return;
+        return false;
     }
 
 
@@ -68,7 +70,9 @@ exports.importCsv = functions.storage.object().onFinalize(event => {
     const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
     if (!contentType.startsWith('text/csv') || resourceState == 'not_exists') {
         console.log('No es un CSV.');
-        return;
+        return false;
+    }else{
+        console.log('Leyendo CSV');
     }
     var db = admin.firestore();
     var batch = db.batch();
