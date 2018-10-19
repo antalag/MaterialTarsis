@@ -68,10 +68,11 @@ exports.importCsv = functions.storage.object().onFinalize(event => {
     const contentType = object.contentType; // File content type.
     const resourceState = object.resourceState; // The resourceState is 'exists' or 'not_exists' (for file/folder deletions).
     const metageneration = object.metageneration; // Number of times metadata has been generated. New objects have a value of 1.
-    if (!contentType.startsWith('text/csv') || resourceState == 'not_exists') {
+    console.log(contentType);
+    if (!filePath.endsWith('csv') || resourceState == 'not_exists') {
         console.log('No es un CSV.');
         return false;
-    }else{
+    } else {
         console.log('Leyendo CSV');
     }
     var db = admin.firestore();
@@ -79,32 +80,30 @@ exports.importCsv = functions.storage.object().onFinalize(event => {
     const bucket = gcs.bucket(fileBucket);
     const stream = bucket.file(filePath).createReadStream();
     var counter = 0;
-    const reader = csv({noheader: true}).fromStream(stream)
-    reader.on('csv', (row) => {
+    return csv().fromStream(stream).subscribe((row) => {
         counter++;
+        console.log(row);
         var newMatRef = db.collection('material').doc();
+        console.log(newMatRef);
         //[ 'Nombre Prueba 4', 'ubicación prueba 4', 'Cantidad 4', 'Comentarios 4', 'Importados' ] 
         var data = {
-            nombre: row[0],
-            ubicacion: row[1],
-            cantidad: row[2],
-            comentarios: row[3],
-            categoria: row[4],
+            nombre: row.nombre,
+            ubicacion: row.ubicacion,
+            cantidad: row.cantidad,
+            comentarios: row.comentarios,
+            categoria: row.categoria,
             imagen: null
         };
+        console.log(data);
         batch.set(newMatRef, data);
-    })
-    return reader.on('done', (error) => {
-        if (error) {
-            console.log(error);
-            return error
-        } else {
-            return batch.commit().then(function () {
-                console.log("importación completada, insertados " + counter + " registros")
-            }).catch(error => {
-                console.log(error)
-            })
-        }
+    }, (error) => {
+        console.log(error);
+    }, () => {
+        return batch.commit().then(function () {
+            console.log("importación completada, insertados " + counter + " registros")
+        }).catch(error => {
+            console.log(error)
+        })
     })
 })
 // // Create and Deploy Your First Cloud Functions
